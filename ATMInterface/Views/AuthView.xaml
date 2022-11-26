@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="ATMInterface.Views.AuthView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ATMInterface.Views" 
+             xmlns:viewmodels="clr-namespace:ATMInterface.ViewModels"
+             d:DataContext="{d:DesignInstance Type=viewmodels:AuthViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Style="{StaticResource WelcomeCaption}" Name = "WelcomeCaption" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Please enter your credit card number and pin to authorize" />
+
+        <TextBlock Name = "CardNumberCaption" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Enter credit card number:" />
+        <TextBox Name="CardNumberField" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" />
+
+        <TextBlock Name = "CardPinCaption" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="Enter your credit card pin:" />
+        <TextBox Name="CardPinField" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" />
+
+        <Button Name="Cancel" Grid.Row="5" Grid.Column="0" Content="Cancel" Command="{Binding CancelCommand}" />
+        <Button Name="Authorize" Grid.Row="5" Grid.Column="1" Content="Proceed" Command="{Binding AuthorizeCommand}"/>
+    </Grid>
+</UserControl>
