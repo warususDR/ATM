@@ -11,13 +11,36 @@ namespace ATMInterface.ViewModels
 {
     class AddViewModel : INotifyPropertyChanged
     {
+        private string _userInput;
+
         private Action _goToMain;
 
         private RelayCommand<object> _cancelCommand;
+        private RelayCommand<object> _addCommand;
 
         private bool CanExecuteCancel(Object obj)
         {
             return true; // validation here
+        }
+
+        private bool CanExecuteAdd(Object obj)
+        {
+            return true; // validation here
+        }
+
+        private void ExecuteAdd()
+        {
+            if (UserInput == "add") GoToMain();
+        }
+
+        public string UserInput
+        {
+            get { return _userInput; }
+            set
+            {
+                _userInput = value;
+                OnPropertyChanged();
+            }
         }
 
         public AddViewModel(Action goToMain) => _goToMain = goToMain;
@@ -32,6 +55,14 @@ namespace ATMInterface.ViewModels
             get
             {
                 return _cancelCommand ??= new RelayCommand<object>(_ => GoToMain(), CanExecuteCancel);
+            }
+        }
+
+        public RelayCommand<object> AddCommand
+        {
+            get
+            {
+                return _addCommand ??= new RelayCommand<object>(_ => ExecuteAdd(), CanExecuteAdd);
             }
         }
 

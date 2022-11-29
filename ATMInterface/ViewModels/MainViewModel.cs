@@ -11,18 +11,25 @@ namespace ATMInterface.ViewModels
 {
     class MainViewModel : INotifyPropertyChanged
     {
+        private string _balance;
+
         private Action _goToAuth;
         private Action _goToTransfer;
         private Action _goToAdd;
         private Action _goToWithdraw;
         private Action _goToDetailedInfo;
 
+        private RelayCommand<object> _printBalanceCommand;
         private RelayCommand<object> _transferCommand;
         private RelayCommand<object> _addCommand;
         private RelayCommand<object> _withdrawCommand;
         private RelayCommand<object> _detailedInfoCommand;
         private RelayCommand<object> _exitCommand;
 
+        private bool CanExecutePrintBalance(Object obj)
+        {
+            return true; // validation here
+        }
         private bool CanExecuteTransfer(Object obj)
         {
             return true; // validation here
@@ -46,6 +53,21 @@ namespace ATMInterface.ViewModels
             return true; // validation here
         }
 
+        private void ExecutePrintBalance()
+        {
+
+        }
+
+        public string Balance
+        {
+            get { return _balance; }
+            set
+            {
+                _balance = value;
+                OnPropertyChanged();
+            }
+        }
+
         public MainViewModel(Action goToAuth, Action goToTransfer, Action goToAdd, Action goToWithdraw, Action goToDetailedInfo)
         {
             _goToAuth = goToAuth;
@@ -53,6 +75,7 @@ namespace ATMInterface.ViewModels
             _goToAdd = goToAdd;
             _goToWithdraw = goToWithdraw;
             _goToDetailedInfo = goToDetailedInfo;
+            Balance = "1000$"; // debug
         }
 
         public void GoToAuth()
@@ -80,6 +103,13 @@ namespace ATMInterface.ViewModels
             _goToDetailedInfo.Invoke();
         }
 
+        public RelayCommand<object> PrintBalanceCommand
+        {
+            get
+            {
+                return _printBalanceCommand ??= new RelayCommand<object>(_ => ExecutePrintBalance(), CanExecutePrintBalance);
+            }
+        }
         public RelayCommand<object> TransferCommand
         {
             get

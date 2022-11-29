@@ -17,15 +17,15 @@ using System.Windows.Shapes;
 namespace ATMInterface.Views
 {
     /// <summary>
-    /// Логика взаимодействия для AuthView.xaml
+    /// Логика взаимодействия для TransferAmountView.xaml
     /// </summary>
-    public partial class AuthView : UserControl
+    public partial class TransferAmountView : UserControl
     {
-        private AuthViewModel _viewmodel;
-        public AuthView(Action goToPinEnter)
+        private TransferAmountViewModel _viewmodel;
+        public TransferAmountView(Action goToTransfer, Action goToMain)
         {
             InitializeComponent();
-            DataContext = _viewmodel = new AuthViewModel(goToPinEnter);
+            DataContext = _viewmodel = new TransferAmountViewModel(goToTransfer, goToMain);
         }
     }
 }

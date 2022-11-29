@@ -29,7 +29,7 @@
         </Border>
 
         <TextBlock Name ="BalanceCaption" Style="{StaticResource DataInsertBlock}" Grid.Row="1" Grid.Column="0" Text="Your Balance:"  />
-        <TextBlock Name="BalanceField" Style="{StaticResource DataInsertBlock}" Grid.Row="2" Grid.Column="0" Text="100" />
+        <TextBlock Name="BalanceField" Style="{StaticResource DataInsertBlock}" Grid.Row="2" Grid.Column="0" Text="{Binding Balance, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Button Name="PrintBalanceButton" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" Content="Print Balance" />
 

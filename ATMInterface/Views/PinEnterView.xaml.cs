@@ -17,15 +17,15 @@ using System.Windows.Shapes;
 namespace ATMInterface.Views
 {
     /// <summary>
-    /// Логика взаимодействия для AuthView.xaml
+    /// Логика взаимодействия для PinEnterView.xaml
     /// </summary>
-    public partial class AuthView : UserControl
+    public partial class PinEnterView : UserControl
     {
-        private AuthViewModel _viewmodel;
-        public AuthView(Action goToPinEnter)
+        private PinEnterViewModel _viewmodel;
+        public PinEnterView(Action goToMain, Action goToAuth)
         {
             InitializeComponent();
-            DataContext = _viewmodel = new AuthViewModel(goToPinEnter);
+            DataContext = _viewmodel = new PinEnterViewModel(goToMain, goToAuth);
         }
     }
 }

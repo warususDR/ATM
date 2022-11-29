@@ -11,42 +11,60 @@ namespace ATMInterface.ViewModels
 {
     class AuthViewModel : INotifyPropertyChanged
     {
-        private Action _goToMain;
+        private string _userInput;
+
+        private Action _goToPinEnter;
 
         private RelayCommand<object> _authorizeCommand;
-        private RelayCommand<object> _cancelCommand;
+        private RelayCommand<object> _exitCommand;
 
         private bool CanExecuteAuthorize(Object obj)
         {
             return true; // validation here
         }
 
-        public AuthViewModel(Action goToMain) => _goToMain = goToMain;
-
-        public void GoToMain()
+        private bool CanExecuteExit(Object obj)
         {
-            _goToMain.Invoke();
+            return true; // validation here
+        }
+
+        private void ExecuteAuthorize()
+        {
+            // authorize OnUserInput call
+            if (UserInput == "0000") GoToPinEnter(); // debug 
+        }
+
+        public string UserInput
+        {
+            get { return _userInput; }
+            set
+            {
+                _userInput = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public AuthViewModel(Action goToPinEnter) => _goToPinEnter = goToPinEnter;
+
+        public void GoToPinEnter()
+        {
+            _goToPinEnter.Invoke();
         }
 
         public RelayCommand<object> AuthorizeCommand
         {
             get
             {
-                return _authorizeCommand ??= new RelayCommand<object>(_ => GoToMain(), CanExecuteAuthorize);
+                return _authorizeCommand ??= new RelayCommand<object>(_ => ExecuteAuthorize(), CanExecuteAuthorize);
             }
         }
 
-        public RelayCommand<object> CancelCommand
+        public RelayCommand<object> ExitCommand
         {
             get
             {
-                return _cancelCommand ??= new RelayCommand<object>(_ => Environment.Exit(0), CanExecuteCancel);
+                return _exitCommand ??= new RelayCommand<object>(_ => Environment.Exit(0), CanExecuteExit);
             }
-        }
-
-        private bool CanExecuteCancel(Object obj)
-        {
-            return true; // validation here
         }
 
         // onPropertyChanged

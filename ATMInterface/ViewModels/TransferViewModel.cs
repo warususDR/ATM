@@ -11,20 +11,54 @@ namespace ATMInterface.ViewModels
 {
     class TransferViewModel : INotifyPropertyChanged
     {
+        private string _userInput;
+
         private Action _goToMain;
+        private Action _goToTransferAmount;
 
         private RelayCommand<object> _cancelCommand;
+        private RelayCommand<object> _acceptReceiverCommand;
 
         private bool CanExecuteCancel(Object obj)
         {
             return true; // validation here
         }
 
-        public TransferViewModel(Action goToMain) => _goToMain = goToMain;
+        private bool CanExecuteAcceptReceiver(Object obj)
+        {
+            return true; // validation here
+        }
+
+        private void ExecuteAcceptReceiver()
+        {
+            if (UserInput == "receiver") GoToTransferAmount();
+        }
+
+        public string UserInput
+        {
+            get { return _userInput; }
+            set
+            {
+                _userInput = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public TransferViewModel(Action goToMain, Action goToTransferAmount)
+        {
+            _goToMain = goToMain;
+            _goToTransferAmount = goToTransferAmount;
+        }
+        
 
         public void GoToMain()
         {
             _goToMain.Invoke();
+        }
+
+        public void GoToTransferAmount()
+        {
+            _goToTransferAmount.Invoke();
         }
 
         public RelayCommand<object> CancelCommand
@@ -32,6 +66,14 @@ namespace ATMInterface.ViewModels
             get
             {
                 return _cancelCommand ??= new RelayCommand<object>(_ => GoToMain(), CanExecuteCancel);
+            }
+        }
+
+        public RelayCommand<object> AcceptReceiverCommand
+        {
+            get
+            {
+                return _acceptReceiverCommand ??= new RelayCommand<object>(_ => ExecuteAcceptReceiver(), CanExecuteAcceptReceiver);
             }
         }
 

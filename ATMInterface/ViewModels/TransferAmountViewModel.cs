@@ -9,29 +9,29 @@ using System.Threading.Tasks;
 
 namespace ATMInterface.ViewModels
 {
-    class WithdrawViewModel : INotifyPropertyChanged
+    class TransferAmountViewModel : INotifyPropertyChanged
     {
         private string _userInput;
 
+        private Action _goToTransfer;
         private Action _goToMain;
 
         private RelayCommand<object> _cancelCommand;
-        private RelayCommand<object> _withdrawCommand;
+        private RelayCommand<object> _transferCommand;
 
         private bool CanExecuteCancel(Object obj)
         {
             return true; // validation here
         }
 
-        private bool CanExecuteWithdraw(Object obj)
+        private bool CanExecuteTransfer(Object obj)
         {
-            return true; //validation here
+            return true; // validation here
         }
 
-        private void ExecuteWithdraw()
+        private void ExecuteTransfer()
         {
-            //OnUserInputCall here
-            if (UserInput == "withdraw") GoToMain(); //debug
+            if (UserInput == "transfer") GoToMain();
         }
 
         public string UserInput
@@ -44,26 +44,34 @@ namespace ATMInterface.ViewModels
             }
         }
 
-        public WithdrawViewModel(Action goToMain) => _goToMain = goToMain;
+        public TransferAmountViewModel(Action goToTransfer, Action goToMain)
+        {
+            _goToTransfer = goToTransfer;
+            _goToMain = goToMain;
+        }
 
-        public void GoToMain()
+        public void GoToTransfer()
+        {
+            _goToTransfer.Invoke();
+        }
+
+        public void  GoToMain()
         {
             _goToMain.Invoke();
         }
-
         public RelayCommand<object> CancelCommand
         {
             get
             {
-                return _cancelCommand ??= new RelayCommand<object>(_ => GoToMain(), CanExecuteCancel);
+                return _cancelCommand ??= new RelayCommand<object>(_ => GoToTransfer(), CanExecuteCancel);
             }
         }
 
-        public RelayCommand<object> WithdrawCommand
+        public RelayCommand<object> TransferCommand
         {
             get
             {
-                return _withdrawCommand ??= new RelayCommand<object>(_ => ExecuteWithdraw(), CanExecuteWithdraw);
+                return _transferCommand ??= new RelayCommand<object>(_ => ExecuteTransfer(), CanExecuteTransfer);
             }
         }
 
@@ -74,6 +82,5 @@ namespace ATMInterface.ViewModels
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
-
     }
 }

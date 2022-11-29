@@ -29,22 +29,22 @@
         </Border>
 
         <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardNumberCaption" Grid.Row="1" Grid.Column="0" Text="Your card number: " />
-        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardNumberField" Grid.Row="1" Grid.Column="1" />
+        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardNumberField" Grid.Row="1" Grid.Column="1" Text="{Binding CardNumber, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardBalanceCaption" Grid.Row="2" Grid.Column="0" Text="Your card available funds: " />
-        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardBalanceField" Grid.Row="2" Grid.Column="1" />
+        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardBalanceField" Grid.Row="2" Grid.Column="1" Text="{Binding CardBalance, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardCreditBalanceCaption" Grid.Row="3" Grid.Column="0" Text="Your card credit funds: " />
-        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardCreditBalanceField" Grid.Row="3" Grid.Column="1" />
+        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardCreditBalanceField" Grid.Row="3" Grid.Column="1" Text="{Binding CardCreditBalance, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardOwnerCaption" Grid.Row="4" Grid.Column="0" Text="Card owner name: " />
-        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardOwnerField" Grid.Row="4" Grid.Column="1" />
+        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardOwnerField" Grid.Row="4" Grid.Column="1" Text="{Binding CardOwner, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardBankCaption" Grid.Row="5" Grid.Column="0" Text="Your card's bank: " />
-        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardBankField" Grid.Row="5" Grid.Column="1" />
+        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardBankField" Grid.Row="5" Grid.Column="1" Text="{Binding CardBank, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardDateCaption" Grid.Row="6" Grid.Column="0" Text="Your card expiry date: " />
-        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardDateField" Grid.Row="6" Grid.Column="1" />
+        <TextBlock Style="{StaticResource DataInsertBlock}" Name="CardDateField" Grid.Row="6" Grid.Column="1" Text="{Binding CardExpiryDate, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <Button Name="ExitButton" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Content ="Exit" Command="{Binding ExitCommand}"  />
     </Grid>

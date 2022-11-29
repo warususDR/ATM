@@ -30,8 +30,14 @@ namespace ATMInterface
         #region Navigation
         public void GoToAuth()
         {
-            Content = new AuthView(GoToMain);
+            Content = new AuthView(GoToPinEnter);
         }
+
+        public void GoToPinEnter()
+        {
+            Content = new PinEnterView(GoToMain, GoToAuth);
+        }
+        
         public void GoToMain()
         {
             Content = new MainView(GoToAuth, GoToTransfer, GoToAdd, GoToWithdraw, GoToDetailedInfo);
@@ -53,7 +59,11 @@ namespace ATMInterface
         }
         public void GoToTransfer()
         {
-            Content = new TransferView(GoToMain);
+            Content = new TransferView(GoToMain, GoToTransferAmount);
+        }
+        public void GoToTransferAmount()
+        {
+            Content = new TransferAmountView(GoToTransfer, GoToMain);
         }
         #endregion
     }
