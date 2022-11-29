@@ -22,10 +22,10 @@ namespace ATMInterface.Views
     public partial class TransferView : UserControl
     {
         TransferViewModel _viewmodel;
-        public TransferView(Action goToMain)
+        public TransferView(Action goToMain, Action goToTransferAmount)
         {
             InitializeComponent();
-            DataContext = _viewmodel = new TransferViewModel(goToMain);
+            DataContext = _viewmodel = new TransferViewModel(goToMain, goToTransferAmount);
         }
     }
 }

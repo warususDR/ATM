@@ -9,29 +9,30 @@ using System.Threading.Tasks;
 
 namespace ATMInterface.ViewModels
 {
-    class WithdrawViewModel : INotifyPropertyChanged
+    class PinEnterViewModel : INotifyPropertyChanged
     {
         private string _userInput;
 
         private Action _goToMain;
+        private Action _goToAuth;
 
+        private RelayCommand<object> _acceptPinCommand;
         private RelayCommand<object> _cancelCommand;
-        private RelayCommand<object> _withdrawCommand;
+
+        private bool CanExecuteAcceptPin(Object obj)
+        {
+            return true; // validation here
+        }
 
         private bool CanExecuteCancel(Object obj)
         {
             return true; // validation here
         }
 
-        private bool CanExecuteWithdraw(Object obj)
+        private void ExecuteAcceptPin()
         {
-            return true; //validation here
-        }
-
-        private void ExecuteWithdraw()
-        {
-            //OnUserInputCall here
-            if (UserInput == "withdraw") GoToMain(); //debug
+            // onUserInput call here
+            if(UserInput == "1") GoToMain(); //debug
         }
 
         public string UserInput
@@ -44,26 +45,35 @@ namespace ATMInterface.ViewModels
             }
         }
 
-        public WithdrawViewModel(Action goToMain) => _goToMain = goToMain;
+        public PinEnterViewModel(Action goToMain, Action goToAuth)
+        {
+            _goToMain = goToMain;
+            _goToAuth = goToAuth;
+        }
 
         public void GoToMain()
         {
             _goToMain.Invoke();
         }
 
+        public void GoToAuth()
+        {
+            _goToAuth.Invoke();
+        }
+
+        public RelayCommand<object> AcceptPinCommand
+        {
+            get
+            {
+                return _acceptPinCommand ??= new RelayCommand<object>(_ => ExecuteAcceptPin(), CanExecuteAcceptPin);
+            }
+        }
+
         public RelayCommand<object> CancelCommand
         {
             get
             {
-                return _cancelCommand ??= new RelayCommand<object>(_ => GoToMain(), CanExecuteCancel);
-            }
-        }
-
-        public RelayCommand<object> WithdrawCommand
-        {
-            get
-            {
-                return _withdrawCommand ??= new RelayCommand<object>(_ => ExecuteWithdraw(), CanExecuteWithdraw);
+                return _cancelCommand ??= new RelayCommand<object>(_ => GoToAuth(), CanExecuteCancel);
             }
         }
 
@@ -74,6 +84,5 @@ namespace ATMInterface.ViewModels
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
-
     }
 }
