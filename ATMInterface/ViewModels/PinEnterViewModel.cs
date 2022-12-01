@@ -1,4 +1,5 @@
 ﻿using ATMInterface.Tools;
+using ATMInterface.Tools.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,7 +22,7 @@ namespace ATMInterface.ViewModels
 
         private bool CanExecuteAcceptPin(Object obj)
         {
-            return true; // validation here
+            return Validation.HasPinFormat(UserInput);
         }
 
         private bool CanExecuteCancel(Object obj)
@@ -32,7 +33,7 @@ namespace ATMInterface.ViewModels
         private void ExecuteAcceptPin()
         {
             // onUserInput call here
-            if(UserInput == "1") GoToMain(); //debug
+            if(UserInput == "1234") GoToMain(); //debug
         }
 
         public string UserInput

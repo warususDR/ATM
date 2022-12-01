@@ -1,4 +1,5 @@
 ﻿using ATMInterface.Tools;
+using ATMInterface.Tools.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,7 @@ namespace ATMInterface.ViewModels
 
         private bool CanExecuteAuthorize(Object obj)
         {
-            return true; // validation here
+            return Validation.HasCreditCardNumberFormat(UserInput);
         }
 
         private bool CanExecuteExit(Object obj)
@@ -31,7 +32,7 @@ namespace ATMInterface.ViewModels
         private void ExecuteAuthorize()
         {
             // authorize OnUserInput call
-            if (UserInput == "0000") GoToPinEnter(); // debug 
+            if (UserInput == "1111222233334444") GoToPinEnter(); // debug 
         }
 
         public string UserInput

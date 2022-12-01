@@ -1,4 +1,5 @@
 ﻿using ATMInterface.Tools;
+using ATMInterface.Tools.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,12 +27,12 @@ namespace ATMInterface.ViewModels
 
         private bool CanExecuteAcceptReceiver(Object obj)
         {
-            return true; // validation here
+            return Validation.HasCreditCardNumberFormat(UserInput);
         }
 
         private void ExecuteAcceptReceiver()
         {
-            if (UserInput == "receiver") GoToTransferAmount();
+            if (UserInput == "1111222233334444") GoToTransferAmount();
         }
 
         public string UserInput
