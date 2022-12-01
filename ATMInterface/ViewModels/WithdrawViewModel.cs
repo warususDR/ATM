@@ -1,4 +1,5 @@
 ﻿using ATMInterface.Tools;
+using ATMInterface.Tools.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,13 +26,13 @@ namespace ATMInterface.ViewModels
 
         private bool CanExecuteWithdraw(Object obj)
         {
-            return true; //validation here
+            return Validation.HasCurrencyFormat(UserInput);
         }
 
         private void ExecuteWithdraw()
         {
             //OnUserInputCall here
-            if (UserInput == "withdraw") GoToMain(); //debug
+            if (UserInput == "100,0") GoToMain(); //debug
         }
 
         public string UserInput

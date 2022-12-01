@@ -1,4 +1,5 @@
 ﻿using ATMInterface.Tools;
+using ATMInterface.Tools.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,12 +26,12 @@ namespace ATMInterface.ViewModels
 
         private bool CanExecuteAdd(Object obj)
         {
-            return true; // validation here
+            return Validation.HasCurrencyFormat(UserInput);
         }
 
         private void ExecuteAdd()
         {
-            if (UserInput == "add") GoToMain();
+            if (UserInput == "100,0") GoToMain();
         }
 
         public string UserInput
