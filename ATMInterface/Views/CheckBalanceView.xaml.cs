@@ -1,4 +1,5 @@
-﻿using ATMInterface.ViewModels;
+﻿using ATM;
+using ATMInterface.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,15 +18,16 @@ using System.Windows.Shapes;
 namespace ATMInterface.Views
 {
     /// <summary>
-    /// Логика взаимодействия для TransferAmountView.xaml
+    /// Логика взаимодействия для CheckBalanceView.xaml
     /// </summary>
-    public partial class TransferAmountView : UserControl
+    public partial class CheckBalanceView : UserControl
     {
-        private TransferAmountViewModel _viewmodel;
-        public TransferAmountView(Action goToTransfer, Action goToMain)
+
+        private CheckBalanceViewModel _viewmodel;
+        public CheckBalanceView(Action goToMain, eATM atm)
         {
             InitializeComponent();
-            DataContext = _viewmodel = new TransferAmountViewModel(goToTransfer, goToMain);
+            DataContext = _viewmodel = new CheckBalanceViewModel(goToMain, atm);
         }
     }
 }
