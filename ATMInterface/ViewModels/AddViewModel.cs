@@ -1,4 +1,5 @@
-﻿using ATMInterface.Tools;
+﻿using ATM;
+using ATMInterface.Tools;
 using ATMInterface.Tools.Utilities;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace ATMInterface.ViewModels
 
         private RelayCommand<object> _cancelCommand;
         private RelayCommand<object> _addCommand;
+        public eATM CurrentATM { get; set; }
 
         private bool CanExecuteCancel(Object obj)
         {
@@ -31,7 +33,8 @@ namespace ATMInterface.ViewModels
 
         private void ExecuteAdd()
         {
-            if (UserInput == "100,0") GoToMain();
+            if (CurrentATM.Engine.OnUserInput(eUserAction.GET_CASH, UserInput) == 1)
+                GoToMain();
         }
 
         public string UserInput
@@ -44,7 +47,11 @@ namespace ATMInterface.ViewModels
             }
         }
 
-        public AddViewModel(Action goToMain) => _goToMain = goToMain;
+        public AddViewModel(Action goToMain, eATM atm)
+        {
+            _goToMain = goToMain;
+            CurrentATM = atm;
+        }
 
         public void GoToMain()
         {

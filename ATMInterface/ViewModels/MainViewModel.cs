@@ -1,4 +1,5 @@
-﻿using ATMInterface.Tools;
+﻿using ATM;
+using ATMInterface.Tools;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,7 +27,7 @@ namespace ATMInterface.ViewModels
         private RelayCommand<object> _detailedInfoCommand;
         private RelayCommand<object> _exitCommand;
 
-        private bool CanExecutePrintBalance(Object obj)
+		private bool CanExecutePrintBalance(Object obj)
         {
             return true; // validation here
         }
@@ -76,7 +77,7 @@ namespace ATMInterface.ViewModels
             _goToWithdraw = goToWithdraw;
             _goToDetailedInfo = goToDetailedInfo;
             Balance = "1000$"; // debug
-        }
+		}
 
         public void GoToAuth()
         {

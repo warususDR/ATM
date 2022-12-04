@@ -1,4 +1,5 @@
-﻿using ATMInterface.ViewModels;
+﻿using ATM;
+using ATMInterface.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +23,10 @@ namespace ATMInterface.Views
     public partial class WithdrawView : UserControl
     {
         WithdrawViewModel _viewmodel;
-        public WithdrawView(Action goToMain)
+        public WithdrawView(Action goToMain, eATM atm)
         {
             InitializeComponent();
-            DataContext = _viewmodel = new WithdrawViewModel(goToMain);
+            DataContext = _viewmodel = new WithdrawViewModel(goToMain, atm);
         }
     }
 }

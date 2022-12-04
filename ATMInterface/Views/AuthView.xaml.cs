@@ -1,4 +1,5 @@
-﻿using ATMInterface.ViewModels;
+﻿using ATM;
+using ATMInterface.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +23,10 @@ namespace ATMInterface.Views
     public partial class AuthView : UserControl
     {
         private AuthViewModel _viewmodel;
-        public AuthView(Action goToPinEnter)
+		public AuthView(Action goToPinEnter, eATM atm)
         {
             InitializeComponent();
-            DataContext = _viewmodel = new AuthViewModel(goToPinEnter);
-        }
+            DataContext = _viewmodel = new AuthViewModel(goToPinEnter, atm);
+		}
     }
 }
