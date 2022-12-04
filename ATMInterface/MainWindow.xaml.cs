@@ -1,4 +1,5 @@
-﻿using ATMInterface.Views;
+﻿using ATM;
+using ATMInterface.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,21 +22,28 @@ namespace ATMInterface
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+
+		private eCommutator commutator;
+		private eATM currentATM;
+		private ePaymentSystem ps;
+		private ePrivatBank pb;
+
+		public MainWindow()
         {
             InitializeComponent();
+            InitATM();
             GoToAuth();
         }
 
         #region Navigation
         public void GoToAuth()
         {
-            Content = new AuthView(GoToPinEnter);
+            Content = new AuthView(GoToPinEnter, currentATM);
         }
 
         public void GoToPinEnter()
         {
-            Content = new PinEnterView(GoToMain, GoToAuth);
+            Content = new PinEnterView(GoToMain, GoToAuth, currentATM);
         }
         
         public void GoToMain()
@@ -50,12 +58,12 @@ namespace ATMInterface
 
         public void GoToAdd()
         {
-            Content = new AddView(GoToMain);
+            Content = new AddView(GoToMain, currentATM);
         }
 
         public void GoToWithdraw()
         {
-            Content = new WithdrawView(GoToMain);
+            Content = new WithdrawView(GoToMain, currentATM);
         }
         public void GoToTransfer()
         {
@@ -66,5 +74,15 @@ namespace ATMInterface
             Content = new TransferAmountView(GoToTransfer, GoToMain);
         }
         #endregion
-    }
+
+        #region InitATM
+        public void InitATM()
+        {
+			commutator = new eCommutator();
+			pb = new ePrivatBank(commutator);
+			currentATM = new eATM(commutator, pb);
+			ps = new ePaymentSystem(commutator);
+		}
+		#endregion
+	}
 }

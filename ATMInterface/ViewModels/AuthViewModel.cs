@@ -1,4 +1,5 @@
-﻿using ATMInterface.Tools;
+﻿using ATM;
+using ATMInterface.Tools;
 using ATMInterface.Tools.Utilities;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,9 @@ namespace ATMInterface.ViewModels
         private string _userInput;
 
         private Action _goToPinEnter;
+		public eATM CurrentATM { get; set; }
 
-        private RelayCommand<object> _authorizeCommand;
+		private RelayCommand<object> _authorizeCommand;
         private RelayCommand<object> _exitCommand;
 
         private bool CanExecuteAuthorize(Object obj)
@@ -31,8 +33,9 @@ namespace ATMInterface.ViewModels
 
         private void ExecuteAuthorize()
         {
-            // authorize OnUserInput call
-            if (UserInput == "1111222233334444") GoToPinEnter(); // debug 
+            //CurrentATM.Engine.OnNewSession();
+            if(CurrentATM.Engine.OnUserInput(eUserAction.CREDIT_CARD_INSERTED, UserInput) == 1)
+                GoToPinEnter();
         }
 
         public string UserInput
@@ -45,7 +48,11 @@ namespace ATMInterface.ViewModels
             }
         }
 
-        public AuthViewModel(Action goToPinEnter) => _goToPinEnter = goToPinEnter;
+        public AuthViewModel(Action goToPinEnter, eATM currentATM)
+        {
+            _goToPinEnter = goToPinEnter;
+            CurrentATM = currentATM;
+        }
 
         public void GoToPinEnter()
         {

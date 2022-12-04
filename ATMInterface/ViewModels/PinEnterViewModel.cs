@@ -1,4 +1,5 @@
-﻿using ATMInterface.Tools;
+﻿using ATM;
+using ATMInterface.Tools;
 using ATMInterface.Tools.Utilities;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace ATMInterface.ViewModels
         private RelayCommand<object> _acceptPinCommand;
         private RelayCommand<object> _cancelCommand;
 
+        public eATM CurrentATM { get; set; }
+
         private bool CanExecuteAcceptPin(Object obj)
         {
             return Validation.HasPinFormat(UserInput);
@@ -32,8 +35,9 @@ namespace ATMInterface.ViewModels
 
         private void ExecuteAcceptPin()
         {
-            // onUserInput call here
-            if(UserInput == "1234") GoToMain(); //debug
+            if (CurrentATM.Engine.OnUserInput(eUserAction.PASSWORD_ENTERED, UserInput) == 1)
+                GoToMain();
+            //if (UserInput == "1234") GoToMain(); //debug
         }
 
         public string UserInput
@@ -46,10 +50,11 @@ namespace ATMInterface.ViewModels
             }
         }
 
-        public PinEnterViewModel(Action goToMain, Action goToAuth)
+        public PinEnterViewModel(Action goToMain, Action goToAuth, eATM atm)
         {
             _goToMain = goToMain;
             _goToAuth = goToAuth;
+            CurrentATM = atm;
         }
 
         public void GoToMain()

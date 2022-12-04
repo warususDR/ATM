@@ -1,4 +1,5 @@
-﻿using ATMInterface.ViewModels;
+﻿using ATM;
+using ATMInterface.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +23,10 @@ namespace ATMInterface.Views
     public partial class PinEnterView : UserControl
     {
         private PinEnterViewModel _viewmodel;
-        public PinEnterView(Action goToMain, Action goToAuth)
+        public PinEnterView(Action goToMain, Action goToAuth, eATM atm)
         {
             InitializeComponent();
-            DataContext = _viewmodel = new PinEnterViewModel(goToMain, goToAuth);
+            DataContext = _viewmodel = new PinEnterViewModel(goToMain, goToAuth, atm);
         }
     }
 }
