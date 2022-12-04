@@ -110,56 +110,39 @@ namespace ATM
             string id = CurrentUser.UserData.СardNumber;
             string pass = CurrentUser.UserData.Password;
             int money = CurrentUser.UserData.MoneyAmount;
-            Card card = SqlDataAccess.LoadInfo(id);
+            bool cardIsValid = SqlDataAccess.ExistsId(id);
+            Card card = new Card();
+            if (cardIsValid) 
+            {
+                card = SqlDataAccess.LoadInfo(id);
+            } 
 
             int put_limit = 1000;
+            answer = -1;
 
-
-            //query impl
-
-
-            if (payload.Header.action == eUserAction.CREDIT_CARD_INSERTED)
+            switch (payload.Header.action)
             {
-                if (SqlDataAccess.ExistsId(id)) answer = 1;
-                else answer = 0;
-                return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
+                case eUserAction.CREDIT_CARD_INSERTED:
+                    answer = cardIsValid ? 1 : 0;
+                    break;
+                case eUserAction.PASSWORD_ENTERED:
+                    answer = SqlDataAccess.CorrectPassword(id, pass) ? 1 : 0;
+                    break;
+                case eUserAction.CHECK_BALANCE:
+                    answer = card.Balance;
+                    break;
+                case eUserAction.PRINT_BALANCE:
+                    answer = card.Balance;
+                    break;
+                case eUserAction.PUT_CASH:
+                    answer = (card.Balance >= 0 && (card.Balance - money) >= 0) ? 1 : 0;
+                    break;
+                case eUserAction.GET_CASH:
+                    answer = (money <= put_limit) ? 1 : 0;
+                    break;
             }
 
-            if (payload.Header.action == eUserAction.PASSWORD_ENTERED)
-            {
-                if (SqlDataAccess.CorrectPassword(id, pass)) answer = 1;
-                else answer = 0;
-                return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
-            }
-
-            if (payload.Header.action == eUserAction.CHECK_BALANCE) answer = 0;
-            {
-                answer = card.Balance;
-                return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
-            }
-
-            if (payload.Header.action == eUserAction.PRINT_BALANCE) answer = 0;
-            {
-                answer = card.Balance;
-                return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
-            }
-
-            if (payload.Header.action == eUserAction.GET_CASH)
-            {
-                if (card.Balance >= 0 && (card.Balance - money) >= 0) answer = 1;
-                else answer = 0;
-                return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
-            }
-
-            if (payload.Header.action == eUserAction.PUT_CASH)
-            {
-                if (money <= put_limit) answer = 1;
-                else answer = 0;
-                return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
-            }
-
-
-
+            return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
             //if (payload.Header.action == eUserAction.CHECK_BALANCE) answer = 3000;
             //answer = 1;
             //return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
