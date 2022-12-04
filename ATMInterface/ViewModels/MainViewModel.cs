@@ -7,31 +7,30 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ATMInterface.ViewModels
 {
     class MainViewModel : INotifyPropertyChanged
     {
-        private string _balance;
+
 
         private Action _goToAuth;
-        private Action _goToTransfer;
         private Action _goToAdd;
         private Action _goToWithdraw;
-        private Action _goToDetailedInfo;
+        private Action _goToCheckBalance;
 
+        private RelayCommand<object> _checkBalanceCommand;
         private RelayCommand<object> _printBalanceCommand;
-        private RelayCommand<object> _transferCommand;
         private RelayCommand<object> _addCommand;
         private RelayCommand<object> _withdrawCommand;
-        private RelayCommand<object> _detailedInfoCommand;
         private RelayCommand<object> _exitCommand;
 
-		private bool CanExecutePrintBalance(Object obj)
+        private bool CanExecuteCheckBalance(Object obj)
         {
             return true; // validation here
         }
-        private bool CanExecuteTransfer(Object obj)
+        private bool CanExecutePrintBalance(Object obj)
         {
             return true; // validation here
         }
@@ -45,10 +44,6 @@ namespace ATMInterface.ViewModels
         {
             return true; // validation here
         }
-        private bool CanExecuteDetailedInfo(Object obj)
-        {
-            return true; // validation here
-        }
         private bool CanExecuteExit(Object obj)
         {
             return true; // validation here
@@ -59,34 +54,32 @@ namespace ATMInterface.ViewModels
 
         }
 
-        public string Balance
+        private void ExecuteCheckBalance()
         {
-            get { return _balance; }
-            set
+            GoToCheckBalance();
+        }
+
+        private void ExecuteExit()
+        {
+            MessageBoxResult res = MessageBox.Show("Closing your session, are you sure?", "ATM", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            if (res == MessageBoxResult.OK)
             {
-                _balance = value;
-                OnPropertyChanged();
+                //Properly close session
+                GoToAuth();
             }
         }
 
-        public MainViewModel(Action goToAuth, Action goToTransfer, Action goToAdd, Action goToWithdraw, Action goToDetailedInfo)
+        public MainViewModel(Action goToAuth, Action goToAdd, Action goToWithdraw, Action goToCheckBalance)
         {
             _goToAuth = goToAuth;
-            _goToTransfer = goToTransfer;
             _goToAdd = goToAdd;
             _goToWithdraw = goToWithdraw;
-            _goToDetailedInfo = goToDetailedInfo;
-            Balance = "1000$"; // debug
-		}
+            _goToCheckBalance = goToCheckBalance;
+        }
 
         public void GoToAuth()
         {
             _goToAuth.Invoke();
-        }
-
-        public void GoToTransfer()
-        {
-            _goToTransfer.Invoke();
         }
 
         public void GoToAdd()
@@ -99,23 +92,23 @@ namespace ATMInterface.ViewModels
             _goToWithdraw.Invoke();
         }
 
-        public void GoToDetailedInfo()
+        public void GoToCheckBalance()
         {
-            _goToDetailedInfo.Invoke();
+            _goToCheckBalance.Invoke();
         }
 
+        public RelayCommand<object> CheckBalanceCommand
+        {
+            get
+            {
+                return _checkBalanceCommand ??= new RelayCommand<object>(_ => ExecuteCheckBalance(), CanExecuteCheckBalance);
+            }
+        }
         public RelayCommand<object> PrintBalanceCommand
         {
             get
             {
                 return _printBalanceCommand ??= new RelayCommand<object>(_ => ExecutePrintBalance(), CanExecutePrintBalance);
-            }
-        }
-        public RelayCommand<object> TransferCommand
-        {
-            get
-            {
-                return _transferCommand ??= new RelayCommand<object>(_ => GoToTransfer(), CanExecuteTransfer);
             }
         }
 
@@ -135,19 +128,11 @@ namespace ATMInterface.ViewModels
             }
         }
 
-        public RelayCommand<object> DetailedInfoCommand
-        {
-            get
-            {
-                return _detailedInfoCommand ??= new RelayCommand<object>(_ => GoToDetailedInfo(), CanExecuteDetailedInfo);
-            }
-        }
-
         public RelayCommand<object> ExitCommand
         {
             get
             {
-                return _exitCommand ??= new RelayCommand<object>(_ => GoToAuth(), CanExecuteExit);
+                return _exitCommand ??= new RelayCommand<object>(_ => ExecuteExit(), CanExecuteExit);
             }
         }
 

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ATMInterface.ViewModels
 {
@@ -35,9 +36,18 @@ namespace ATMInterface.ViewModels
 
         private void ExecuteAcceptPin()
         {
-            if (CurrentATM.Engine.OnUserInput(eUserAction.PASSWORD_ENTERED, UserInput) == 1)
-                GoToMain();
-            //if (UserInput == "1234") GoToMain(); //debug
+            int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.PASSWORD_ENTERED, UserInput);
+            if (actionSuccess == 1) GoToMain();
+            else if (actionSuccess == 0)
+            {
+                string msg = "Incorrect Pin Entered!";
+                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else if(actionSuccess == -1)
+            {
+                string msg = "Error Occured!";
+                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public string UserInput

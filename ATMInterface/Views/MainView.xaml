@@ -21,24 +21,20 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         
-        <Border Style="{StaticResource GreetingCustomBorder}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+        <Border Style="{StaticResource GreetingCustomBorder}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <TextBlock Style="{StaticResource WelcomeCaption}"  Name = "GreetingCaption" Text="ATM" />
         </Border>
 
-        <TextBlock Name ="BalanceCaption" Style="{StaticResource DataInsertBlock}" Grid.Row="1" Grid.Column="0" Text="Your Balance:"  />
-        <TextBlock Name="BalanceField" Style="{StaticResource DataInsertBlock}" Grid.Row="2" Grid.Column="0" Text="{Binding Balance, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Button Name="CheckBalanceButton" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Content="Check Balance" Command="{Binding CheckBalanceCommand}" />
 
-        <Button Name="PrintBalanceButton" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" Content="Print Balance" />
+        <Button Name="PrintBalanceButton" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Content="Print Balance" />
 
         <Button Name ="AddButton" Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Content="Add" Command="{Binding AddCommand}" />
         <Button Name ="WithdrawButton" Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" Content="Withdraw" Command="{Binding WithdrawCommand}"/>
-        <Button Name ="TransferButton" Grid.Row="3" Grid.Column="2" Grid.RowSpan="2" Content="Transfer" Command="{Binding TransferCommand}" />
 
-        <Button Name ="ExitButton" Grid.Row="5" Grid.Column="0" Grid.RowSpan="2" Content="Exit" Command="{Binding ExitCommand}" />
-        <Button Name ="DetailedInfoButton" Grid.Row="5" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Content="Detailed Card Information" Command="{Binding DetailedInfoCommand}" />
-            
+        <Button Name ="ExitButton" Grid.Row="5" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Content="Exit" Command="{Binding ExitCommand}" />
+
     </Grid>
 </UserControl>

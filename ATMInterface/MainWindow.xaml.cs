@@ -2,6 +2,7 @@
 using ATMInterface.Views;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,19 @@ namespace ATMInterface
 		private ePaymentSystem ps;
 		private ePrivatBank pb;
 
-		public MainWindow()
+        private void Killing_App(object sender, CancelEventArgs e)
+        {
+            string msg = "Are you sure you want to exit???";
+            MessageBoxResult result = MessageBox.Show(msg,"ATM", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.No)
+            {
+                e.Cancel = true;
+            }
+            
+        }
+
+
+        public MainWindow()
         {
             InitializeComponent();
             InitATM();
@@ -48,14 +61,8 @@ namespace ATMInterface
         
         public void GoToMain()
         {
-            Content = new MainView(GoToAuth, GoToTransfer, GoToAdd, GoToWithdraw, GoToDetailedInfo);
+            Content = new MainView(GoToAuth, GoToAdd, GoToWithdraw, GoToCheckBalance);
         }
-
-        public void GoToDetailedInfo()
-        {
-            Content = new DetailedInfoView(GoToMain);
-        }
-
         public void GoToAdd()
         {
             Content = new AddView(GoToMain, currentATM);
@@ -65,13 +72,10 @@ namespace ATMInterface
         {
             Content = new WithdrawView(GoToMain, currentATM);
         }
-        public void GoToTransfer()
+
+        public void GoToCheckBalance()
         {
-            Content = new TransferView(GoToMain, GoToTransferAmount);
-        }
-        public void GoToTransferAmount()
-        {
-            Content = new TransferAmountView(GoToTransfer, GoToMain);
+            Content = new CheckBalanceView(GoToMain, currentATM);
         }
         #endregion
 
@@ -84,5 +88,7 @@ namespace ATMInterface
 			ps = new ePaymentSystem(commutator);
 		}
 		#endregion
+
+
 	}
 }

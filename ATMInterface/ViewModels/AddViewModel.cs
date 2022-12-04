@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ATMInterface.ViewModels
 {
@@ -33,8 +34,22 @@ namespace ATMInterface.ViewModels
 
         private void ExecuteAdd()
         {
-            if (CurrentATM.Engine.OnUserInput(eUserAction.GET_CASH, UserInput) == 1)
+            int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.PUT_CASH, UserInput);
+            if (actionSuccess == 1)
+            {
+                MessageBox.Show("Successfully added cash!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 GoToMain();
+            }
+            else if (actionSuccess == 0)
+            {
+                string msg = "Couldn't add cash!";
+                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else if (actionSuccess == -1)
+            {
+                string msg = "Error Occured!";
+                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public string UserInput

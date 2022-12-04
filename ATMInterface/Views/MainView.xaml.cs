@@ -22,10 +22,10 @@ namespace ATMInterface.Views
     public partial class MainView : UserControl
     {
         MainViewModel _viewmodel;
-        public MainView(Action goToAuth, Action goToTransfer, Action goToAdd, Action goToWithdraw, Action goToDetailedInfo )
+        public MainView(Action goToAuth, Action goToAdd, Action goToWithdraw, Action goToCheckBalance)
         {
             InitializeComponent();
-            DataContext = _viewmodel = new MainViewModel(goToAuth, goToTransfer, goToAdd, goToWithdraw, goToDetailedInfo);
+            DataContext = _viewmodel = new MainViewModel(goToAuth, goToAdd, goToWithdraw, goToCheckBalance);
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ATMInterface.ViewModels
 {
@@ -18,7 +19,8 @@ namespace ATMInterface.ViewModels
         private Action _goToPinEnter;
 		public eATM CurrentATM { get; set; }
 
-		private RelayCommand<object> _authorizeCommand;
+
+        private RelayCommand<object> _authorizeCommand;
         private RelayCommand<object> _exitCommand;
 
         private bool CanExecuteAuthorize(Object obj)
@@ -34,8 +36,31 @@ namespace ATMInterface.ViewModels
         private void ExecuteAuthorize()
         {
             //CurrentATM.Engine.OnNewSession();
-            if(CurrentATM.Engine.OnUserInput(eUserAction.CREDIT_CARD_INSERTED, UserInput) == 1)
+            int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.CREDIT_CARD_INSERTED, UserInput);
+            if (actionSuccess == 1)
+            {
                 GoToPinEnter();
+            }
+            else if (actionSuccess == 0)
+            {
+                string msg = "Couldn't find card with this number!";
+                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else if (actionSuccess == -1)
+            {
+                string msg = "Error Occured!";
+                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ExecuteExit()
+        {
+            string msg = "Are you sure you want to exit???";
+            MessageBoxResult result = MessageBox.Show(msg, "ATM", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Yes)
+            {
+                Environment.Exit(0);
+            }
         }
 
         public string UserInput
@@ -71,7 +96,7 @@ namespace ATMInterface.ViewModels
         {
             get
             {
-                return _exitCommand ??= new RelayCommand<object>(_ => Environment.Exit(0), CanExecuteExit);
+                return _exitCommand ??= new RelayCommand<object>(_ => ExecuteExit(), CanExecuteExit);
             }
         }
 
