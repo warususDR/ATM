@@ -70,12 +70,19 @@ namespace ATMInterface.AccesDataSQL
         }
 
 
-        public static Card LoadInfo(string id_card)
+        public static Card? LoadInfo(string id_card)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                Card output = cnn.QuerySingle<Card>("select * from card where id_number = " + id_card, 1);
-                return output;
+                try
+                {
+                    Card output = cnn.QuerySingle<Card>("select * from card where id_number = " + id_card, 1);
+                    return output;
+                }
+                catch {
+                    return null;
+                }
+                
             }
         }
 
