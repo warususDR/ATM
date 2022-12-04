@@ -29,7 +29,7 @@
 
         <Button Name="CheckBalanceButton" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Content="Check Balance" Command="{Binding CheckBalanceCommand}" />
 
-        <Button Name="PrintBalanceButton" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Content="Print Balance" />
+        <Button Name="PrintBalanceButton" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Content="Print Balance" Command="{Binding PrintBalanceCommand}" />
 
         <Button Name ="AddButton" Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Content="Add" Command="{Binding AddCommand}" />
         <Button Name ="WithdrawButton" Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" Content="Withdraw" Command="{Binding WithdrawCommand}"/>

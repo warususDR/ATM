@@ -1,5 +1,6 @@
 ﻿using ATM;
 using ATMInterface.Tools;
+using ATMInterface.Tools.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -51,7 +52,7 @@ namespace ATMInterface.ViewModels
 
         private void ExecutePrintBalance()
         {
-
+            PrintBalanceUitlity.PrintBalance("1111222233334444", "1000$");
         }
 
         private void ExecuteCheckBalance()
