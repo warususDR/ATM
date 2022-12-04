@@ -8,7 +8,7 @@ namespace ATMInterface.DBClassess
 {
     public class Card
     {
-        public int Id_number { get; set; }
+        public string Id_number { get; set; }
         public string Pasword { get; set; }
         public int Balance { get; set; }
         public string Card_type { get; set; }

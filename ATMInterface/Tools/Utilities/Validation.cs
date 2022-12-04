@@ -14,7 +14,7 @@ namespace ATMInterface.Tools.Utilities
         private static readonly Regex currency = new Regex(@"^((([1-9]\d{0,2},(\d{3},)*\d{3}|[1-9]\d*)(.\d{1,4})?)|(0\.\d{1,4}))$");  
         public static bool HasCreditCardNumberFormat(string text)
         {
-            return numbers.IsMatch(text) && text.Length == 16;
+            return numbers.IsMatch(text) && text.Length == 4;
         }
 
         public static bool HasPinFormat(string text)
