@@ -27,7 +27,6 @@ namespace ATMInterface.Views
 		public AuthView(Action goToPinEnter, eATM atm)
         {
             InitializeComponent();
-            SqlDataAccess.CorrectPassword("1111", "0001");
             DataContext = _viewmodel = new AuthViewModel(goToPinEnter, atm);
 		}
     }

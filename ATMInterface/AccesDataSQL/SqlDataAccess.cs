@@ -69,13 +69,34 @@ namespace ATMInterface.AccesDataSQL
             }
         }
 
-
-        public static Card LoadInfo(string id_card)
+        public static void UpdateBalance(string id_card, int newBalance)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                Card output = cnn.QuerySingle<Card>("select * from card where id_number = " + id_card, 1);
-                return output;
+                try
+                {
+                    cnn.Execute("update card set balance=@bal where id_number =@id", param: new {bal = newBalance, id = id_card });
+                }
+                catch
+                {                   
+                }
+            }
+        }
+
+
+        public static Card? LoadInfo(string id_card)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                try
+                {
+                    Card output = cnn.QuerySingle<Card>("select * from card where id_number = " + id_card, 1);
+                    return output;
+                }
+                catch {
+                    return null;
+                }
+                
             }
         }
 
