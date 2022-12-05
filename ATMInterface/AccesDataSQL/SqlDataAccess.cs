@@ -69,6 +69,20 @@ namespace ATMInterface.AccesDataSQL
             }
         }
 
+        public static void UpdateBalance(string id_card, int newBalance)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                try
+                {
+                    cnn.Execute("update card set balance=@bal where id_number =@id", param: new {bal = newBalance, id = id_card });
+                }
+                catch
+                {                   
+                }
+            }
+        }
+
 
         public static Card? LoadInfo(string id_card)
         {
