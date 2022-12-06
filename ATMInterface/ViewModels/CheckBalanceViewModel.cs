@@ -27,7 +27,7 @@ namespace ATMInterface.ViewModels
         {
             _goToMain = goToMain;
             CurrentATM = currentATM;
-            Balance = "1000$";
+            Balance = CurrentATM.Engine.OnUserInput(eUserAction.CHECK_BALANCE).Item2;
         }
 
         public void GoToMain()

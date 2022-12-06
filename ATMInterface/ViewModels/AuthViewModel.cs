@@ -35,7 +35,7 @@ namespace ATMInterface.ViewModels
 
         private void ExecuteAuthorize()
         {
-            //CurrentATM.Engine.OnNewSession();
+            CurrentATM.Engine.OnNewSession();
             int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.CREDIT_CARD_INSERTED, UserInput);
             if (actionSuccess == 1)
             {

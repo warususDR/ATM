@@ -27,6 +27,8 @@ namespace ATMInterface.ViewModels
         private RelayCommand<object> _withdrawCommand;
         private RelayCommand<object> _exitCommand;
 
+        public eATM CurrentATM { get; set; }
+
         private bool CanExecuteCheckBalance(Object obj)
         {
             return true; // validation here
@@ -52,7 +54,7 @@ namespace ATMInterface.ViewModels
 
         private void ExecutePrintBalance()
         {
-            PrintBalanceUitlity.PrintBalance("1111222233334444", "1000$");
+            PrintBalanceUitlity.PrintBalance(CurrentATM.Engine.OnUserInput(eUserAction.PRINT_BALANCE));
         }
 
         private void ExecuteCheckBalance()
@@ -65,17 +67,18 @@ namespace ATMInterface.ViewModels
             MessageBoxResult res = MessageBox.Show("Closing your session, are you sure?", "ATM", MessageBoxButton.OKCancel, MessageBoxImage.Question);
             if (res == MessageBoxResult.OK)
             {
-                //Properly close session
+                CurrentATM.Engine.SessionIsOver();
                 GoToAuth();
             }
         }
 
-        public MainViewModel(Action goToAuth, Action goToAdd, Action goToWithdraw, Action goToCheckBalance)
+        public MainViewModel(Action goToAuth, Action goToAdd, Action goToWithdraw, Action goToCheckBalance, eATM atm)
         {
             _goToAuth = goToAuth;
             _goToAdd = goToAdd;
             _goToWithdraw = goToWithdraw;
             _goToCheckBalance = goToCheckBalance;
+            CurrentATM = atm;
         }
 
         public void GoToAuth()
