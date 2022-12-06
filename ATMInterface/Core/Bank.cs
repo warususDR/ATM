@@ -19,12 +19,12 @@ namespace ATM
         protected abstract Result ProcessQuery(eLog payload, out int answer);
     }
 
-    public class ePrivatBank : eBank 
+    public class eMonobank : eBank 
     {
         private eBankUser CurrentUser { get; set; }
         int queryAnswer;//shit code might delete later
-        public ePrivatBank(eCommutator _commutator)
-            : base("PrivatBank", _commutator)
+        public eMonobank(eCommutator _commutator)
+            : base("monobank", _commutator)
         {
             ATMNetwork = new List<eATMEngine>();
             init();
@@ -49,8 +49,6 @@ namespace ATM
                     ReqSenders.Push(payload.Header.src);
                     if (ReqSenders.Peek() == "PAYMENT_SYSTEM")
                     {
-                        
-                        
                         if (payload.Header.action == eUserAction.CREDIT_CARD_INSERTED) 
                         { 
                             CurrentUser = new eBankUser(); 
@@ -58,9 +56,10 @@ namespace ATM
                             data.СardNumber = payload.UserData.СardNumber; 
                             CurrentUser.UserData = data; 
                         }
-                        //else if (payload.Header.action == eUserAction.SESSION_OFF) { CurrentUser = null; return true; }
+                        else if (payload.Header.action == eUserAction.SESSION_OFF) { CurrentUser = null; return true; }
                         else if (payload.Header.action == eUserAction.PASSWORD_ENTERED) { var data = CurrentUser.UserData; data.Password = payload.UserData.Password; CurrentUser.UserData = data; }
-                        else if (payload.Header.action == eUserAction.GET_CASH || payload.Header.action == eUserAction.PUT_CASH) { var data = CurrentUser.UserData; data.MoneyAmount = payload.UserData.MoneyAmount; CurrentUser.UserData = data; }
+                        else if (payload.Header.action == eUserAction.GET_CASH || payload.Header.action == eUserAction.PUT_CASH) 
+                        { var data = CurrentUser.UserData; data.MoneyAmount = payload.UserData.MoneyAmount; CurrentUser.UserData = data; }
 
                         Result res = ProcessQuery(payload, out queryAnswer);
                         if (payload.Header.action == eUserAction.CHECK_BALANCE)
@@ -85,26 +84,6 @@ namespace ATM
             }
             return false;
         }
-
-        //public enum eUserAction
-        //{
-        //    CREDIT_CARD_INSERTED,
-        //    PASSWORD_ENTERED,
-        //    CHECK_BALANCE,
-        //    PRINT_BALANCE,//same action as check balance?...
-        //    GET_CASH,
-        //    PUT_CASH,
-        //    SESSION_ON,
-        //    SESSION_OFF,
-        //}
-
-        //public enum Result
-        //{
-        //    ERROR = -1,
-        //    FAIL = 0,
-        //    SUCCESS = 1,
-        //}
-
         protected override Result ProcessQuery(eLog payload, out int answer)
         {
             string id = CurrentUser.UserData.СardNumber;
@@ -143,9 +122,6 @@ namespace ATM
             }
 
             return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
-            //if (payload.Header.action == eUserAction.CHECK_BALANCE) answer = 3000;
-            //answer = 1;
-            //return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
         }
     }
 }

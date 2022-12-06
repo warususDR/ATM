@@ -1,4 +1,5 @@
-﻿using ATMInterface.AccesDataSQL;
+﻿using ATM;
+using ATMInterface.AccesDataSQL;
 using ATMInterface.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -23,10 +24,10 @@ namespace ATMInterface.Views
     public partial class MainView : UserControl
     {
         MainViewModel _viewmodel;
-        public MainView(Action goToAuth, Action goToAdd, Action goToWithdraw, Action goToCheckBalance)
+        public MainView(Action goToAuth, Action goToAdd, Action goToWithdraw, Action goToCheckBalance, eATM atm)
         {
             InitializeComponent();
-            DataContext = _viewmodel = new MainViewModel(goToAuth, goToAdd, goToWithdraw, goToCheckBalance);
+            DataContext = _viewmodel = new MainViewModel(goToAuth, goToAdd, goToWithdraw, goToCheckBalance, atm);
         }
     }
 }

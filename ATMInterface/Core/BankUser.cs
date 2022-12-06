@@ -13,5 +13,5 @@ namespace ATM
         { UserData = new Data(); }
 
 		public Data UserData { get;set;}
-}
+    }
 }

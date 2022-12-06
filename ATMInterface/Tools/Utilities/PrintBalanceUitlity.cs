@@ -68,9 +68,9 @@ namespace ATMInterface.Tools.Utilities
             }
         }
 
-        public static void PrintBalance(string cardNumber, string balance)
+        public static void PrintBalance(Tuple<string, string> printInfo)
         {
-            FlowDocument doc = BuildBalanceDoc(cardNumber, balance);
+            FlowDocument doc = BuildBalanceDoc(printInfo.Item1, printInfo.Item2);
             if(!PrintDocument(doc)) MessageBox.Show("Document not printed!", "ATM", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 

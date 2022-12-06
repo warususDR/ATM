@@ -6,15 +6,13 @@ using System.Windows.Markup;
 
 namespace ATM
 {
-
     public enum LogType
     { Req, Ack }
     public class eLogger
     {
         public static eLog GenerateLog(eUserAction action, string data, string dst, string src, LogType type, Result result = Result.FAIL) { return new eLog(action, dst, src, type, result, data); }
         public static eLog GenerateLog(eUserAction action, Data data, string dst, string src, LogType type, Result result = Result.FAIL) { return new eLog(action, dst, src, type, data, result); }
-        public static eLog GenerateLog(eHeader header, Data data, Result result = Result.FAIL) { return new eLog(header.action, header.dst, header.src, header.type, data, result); }
-    }
+        }
 
     public struct Data
     {
@@ -53,6 +51,7 @@ namespace ATM
                         _data.Password = data;
                         break;
                     case eUserAction.GET_CASH:
+                    case eUserAction.PUT_CASH:
                         _data.MoneyAmount = Int32.Parse(data);
                         break;
                 }   
@@ -70,13 +69,13 @@ namespace ATM
             _header.result = result;
             _data = data;
         }
-
-        public eHeader Header => _header;
+       
         public Data UserData => _data;
+        private Data _data;
+        public eHeader Header => _header;
         private eHeader _header;
-        private Data _data;//from node is src, to node is dst answer
 
-        internal void ApplyData(Data userData)
+        internal void ApplyData(Data userData)//shit
         {
             if(userData.Password != null) { this._data.Password = userData.Password; }
             if(userData.СardNumber != null) { this._data.СardNumber = userData.СardNumber; }
