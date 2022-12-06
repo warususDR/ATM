@@ -40,7 +40,6 @@ namespace ATMInterface.AccesDataSQL
                     return true;
                 }
                 catch {
-                    MessageBox.Show("false");
                     return false; 
                 }
                     
@@ -100,6 +99,23 @@ namespace ATMInterface.AccesDataSQL
             }
         }
 
+
+        public static Card_bank LoadBank(string id_bank)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                try
+                {
+                    Card_bank output = cnn.QuerySingle<Card_bank>("select * from bank where id_number = " + id_bank, 1);
+                    return output;
+                }
+                catch
+                {
+                    return null;
+                }
+
+            }
+        }
 
 
                 private static string LoadConnectionString(string id = "Default")
