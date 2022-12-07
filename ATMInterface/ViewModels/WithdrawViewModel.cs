@@ -22,11 +22,6 @@ namespace ATMInterface.ViewModels
         private RelayCommand<object> _withdrawCommand;
         public eATM CurrentATM { get; set; }
 
-        private bool CanExecuteCancel(Object obj)
-        {
-            return true; // validation here
-        }
-
         private bool CanExecuteWithdraw(Object obj)
         {
             return Validation.HasCurrencyFormat(UserInput);
@@ -38,7 +33,7 @@ namespace ATMInterface.ViewModels
             if (actionSuccess == 1)
             {
                 GoToMain();
-                MessageBox.Show("Successfully withdrew cash!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Successfully withdrew cash!", "ATM", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else if (actionSuccess == 0)
             {
@@ -77,7 +72,7 @@ namespace ATMInterface.ViewModels
         {
             get
             {
-                return _cancelCommand ??= new RelayCommand<object>(_ => GoToMain(), CanExecuteCancel);
+                return _cancelCommand ??= new RelayCommand<object>(_ => GoToMain(), Validation.AlwaysExecute);
             }
         }
 

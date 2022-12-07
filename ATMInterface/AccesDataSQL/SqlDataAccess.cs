@@ -23,7 +23,7 @@ namespace ATMInterface.AccesDataSQL
                     var output = cnn.QuerySingle<Card>("select balance from card where id_number = " + id_card, 1);
                     mybalance = output.Balance;
 
-                   // MessageBox.Show(mybalance.ToString());
+                    // MessageBox.Show(mybalance.ToString());
                     return mybalance;
                 }
 
@@ -92,7 +92,7 @@ namespace ATMInterface.AccesDataSQL
                     return output;
                 }
                 catch {
-                    MessageBox.Show("smth goes wrong with id of a card");
+                    //MessageBox.Show("smth goes wrong with id of a card");
                     return null;
                 }
                 
@@ -117,7 +117,7 @@ namespace ATMInterface.AccesDataSQL
             }
         }
 
-        public static string LoadBankName(string id_bank)
+        public static string? LoadBankName(string id_bank)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {

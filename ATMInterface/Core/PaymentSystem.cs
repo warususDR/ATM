@@ -7,18 +7,13 @@ using System.Threading.Tasks;
 
 namespace ATM
 {
-   
     class ePaymentSystem : Node
     {
-        Dictionary<string, string> cardsCodes;//create dictionary<string, list<string>>
         public string BankEmitent;
         public ePaymentSystem(eCommutator _commutator)
             : base("PAYMENT_SYSTEM", _commutator)
         {
-            cardsCodes = new Dictionary<string, string>();//it should be database also..
             init();
-
-            cardsCodes.Add("PrivatBank", "1111");
         }
 
         public override void receive(eLog payload)
@@ -35,7 +30,9 @@ namespace ATM
                 if (payload.Header.type == LogType.Req)
                 {
                     ReqSenders.Push(payload.Header.src);
+                    
                     if (BankEmitent == null) BankEmitent = SqlDataAccess.LoadBankName(id);//here should be method to get name from db
+
                     send(eLogger.GenerateLog(payload.Header.action, payload.UserData, BankEmitent, Name, payload.Header.type));
                 }
                 else

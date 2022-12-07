@@ -8,8 +8,9 @@ namespace ATM
     {
         private eBank bankAcquire;
         private eATM ATMowner;
-        //bool sessionIsOn = false;
+        bool sessionIsOn = false;
         private int result = 0;
+        private Tuple<string, string> printInfo;
         public eATMEngine(eATM _owner, eCommutator _commutator, eBank _bankAcquire)
             : base("ATM", _commutator)
         {
@@ -18,7 +19,7 @@ namespace ATM
             bankAcquire.ATMregister(this);
             init();
         }
-/*        public void OnNewSession()//to use by interface
+        public void OnNewSession()//to use by interface
         {
             sessionIsOn = true;
         }
@@ -26,12 +27,17 @@ namespace ATM
         {
             sessionIsOn = false;
             send(eLogger.GenerateLog(eUserAction.SESSION_OFF, "", bankAcquire.Name, Name, LogType.Req));
-        }*/
+        }
         public int OnUserInput(eUserAction _action, string _userInput)//to use by interface
         {
-            ProcessAction(_action, _userInput);
-
+            if (sessionIsOn) ProcessAction(_action, _userInput);
             return result;
+        }
+
+        public Tuple<string, string> OnUserInput(eUserAction _action)//to use by interface
+        {
+            if (sessionIsOn) ProcessAction(_action, "");
+            return printInfo;
         }
         private bool ProcessAction(eUserAction _action, string _userInput)
         {
@@ -48,9 +54,14 @@ namespace ATM
                 }
                 else//answer
                 {
-                    if (_payload.Header.action == eUserAction.CHECK_BALANCE) result = _payload.UserData.MoneyAmount;
+                    if (_payload.Header.action == eUserAction.PRINT_BALANCE || _payload.Header.action == eUserAction.CHECK_BALANCE)
+                    {
+                        printInfo = new Tuple<string, string>(_payload.UserData.СardNumber, _payload.UserData.MoneyAmount.ToString());
+                    }
                     else
+                    {
                         result = _payload.Header.result.Equals("FAIL") ? -1 : _payload.Header.result.Equals("ERROR") ? 0 : 1;
+                    }
                 }
             }
         } 

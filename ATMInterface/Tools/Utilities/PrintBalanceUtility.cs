@@ -9,7 +9,7 @@ using System.Windows.Documents;
 
 namespace ATMInterface.Tools.Utilities
 {
-    internal class PrintBalanceUitlity
+    internal class PrintBalanceUtility
     {
         private static FlowDocument BuildBalanceDoc(string cardNumber, string balance)
         { 
@@ -60,17 +60,17 @@ namespace ATMInterface.Tools.Utilities
                 printDialog.PrintDocument(idpSource.DocumentPaginator, "Balance");
                 return true;
             }
-            catch (Exception e)
+            catch 
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show("Print error!", "ATM", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 return false;
             }
         }
 
-        public static void PrintBalance(string cardNumber, string balance)
+        public static void PrintBalance(Tuple<string, string> printInfo)
         {
-            FlowDocument doc = BuildBalanceDoc(cardNumber, balance);
+            FlowDocument doc = BuildBalanceDoc(printInfo.Item1, printInfo.Item2);
             if(!PrintDocument(doc)) MessageBox.Show("Document not printed!", "ATM", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 

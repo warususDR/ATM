@@ -29,11 +29,6 @@ namespace ATMInterface.ViewModels
             return Validation.HasPinFormat(UserInput);
         }
 
-        private bool CanExecuteCancel(Object obj)
-        {
-            return true; // validation here
-        }
-
         private void ExecuteAcceptPin()
         {
             int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.PASSWORD_ENTERED, UserInput);
@@ -89,11 +84,10 @@ namespace ATMInterface.ViewModels
         {
             get
             {
-                return _cancelCommand ??= new RelayCommand<object>(_ => GoToAuth(), CanExecuteCancel);
+                return _cancelCommand ??= new RelayCommand<object>(_ => GoToAuth(), Validation.AlwaysExecute);
             }
         }
 
-        // onPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {

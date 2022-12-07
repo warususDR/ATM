@@ -22,11 +22,6 @@ namespace ATMInterface.ViewModels
         private RelayCommand<object> _addCommand;
         public eATM CurrentATM { get; set; }
 
-        private bool CanExecuteCancel(Object obj)
-        {
-            return true; // validation here
-        }
-
         private bool CanExecuteAdd(Object obj)
         {
             return Validation.HasCurrencyFormat(UserInput);
@@ -77,7 +72,7 @@ namespace ATMInterface.ViewModels
         {
             get
             {
-                return _cancelCommand ??= new RelayCommand<object>(_ => GoToMain(), CanExecuteCancel);
+                return _cancelCommand ??= new RelayCommand<object>(_ => GoToMain(), Validation.AlwaysExecute);
             }
         }
 
@@ -89,7 +84,6 @@ namespace ATMInterface.ViewModels
             }
         }
 
-        // onPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {

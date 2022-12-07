@@ -27,32 +27,11 @@ namespace ATMInterface.ViewModels
         private RelayCommand<object> _withdrawCommand;
         private RelayCommand<object> _exitCommand;
 
-        private bool CanExecuteCheckBalance(Object obj)
-        {
-            return true; // validation here
-        }
-        private bool CanExecutePrintBalance(Object obj)
-        {
-            return true; // validation here
-        }
-
-        private bool CanExecuteAdd(Object obj)
-        {
-            return true; // validation here
-        }
-
-        private bool CanExecuteWithdraw(Object obj)
-        {
-            return true; // validation here
-        }
-        private bool CanExecuteExit(Object obj)
-        {
-            return true; // validation here
-        }
+        public eATM CurrentATM { get; set; }
 
         private void ExecutePrintBalance()
         {
-            PrintBalanceUitlity.PrintBalance("1111222233334444", "1000$");
+            PrintBalanceUtility.PrintBalance(CurrentATM.Engine.OnUserInput(eUserAction.PRINT_BALANCE));
         }
 
         private void ExecuteCheckBalance()
@@ -65,17 +44,18 @@ namespace ATMInterface.ViewModels
             MessageBoxResult res = MessageBox.Show("Closing your session, are you sure?", "ATM", MessageBoxButton.OKCancel, MessageBoxImage.Question);
             if (res == MessageBoxResult.OK)
             {
-                //Properly close session
+                CurrentATM.Engine.SessionIsOver();
                 GoToAuth();
             }
         }
 
-        public MainViewModel(Action goToAuth, Action goToAdd, Action goToWithdraw, Action goToCheckBalance)
+        public MainViewModel(Action goToAuth, Action goToAdd, Action goToWithdraw, Action goToCheckBalance, eATM atm)
         {
             _goToAuth = goToAuth;
             _goToAdd = goToAdd;
             _goToWithdraw = goToWithdraw;
             _goToCheckBalance = goToCheckBalance;
+            CurrentATM = atm;
         }
 
         public void GoToAuth()
@@ -102,14 +82,14 @@ namespace ATMInterface.ViewModels
         {
             get
             {
-                return _checkBalanceCommand ??= new RelayCommand<object>(_ => ExecuteCheckBalance(), CanExecuteCheckBalance);
+                return _checkBalanceCommand ??= new RelayCommand<object>(_ => ExecuteCheckBalance(), Validation.AlwaysExecute);
             }
         }
         public RelayCommand<object> PrintBalanceCommand
         {
             get
             {
-                return _printBalanceCommand ??= new RelayCommand<object>(_ => ExecutePrintBalance(), CanExecutePrintBalance);
+                return _printBalanceCommand ??= new RelayCommand<object>(_ => ExecutePrintBalance(), Validation.AlwaysExecute);
             }
         }
 
@@ -117,7 +97,7 @@ namespace ATMInterface.ViewModels
         {
             get
             {
-                return _addCommand ??= new RelayCommand<object>(_ => GoToAdd(), CanExecuteAdd);
+                return _addCommand ??= new RelayCommand<object>(_ => GoToAdd(), Validation.AlwaysExecute);
             }
         }
 
@@ -125,7 +105,7 @@ namespace ATMInterface.ViewModels
         {
             get
             {
-                return _withdrawCommand ??= new RelayCommand<object>(_ => GoToWithdraw(), CanExecuteWithdraw);
+                return _withdrawCommand ??= new RelayCommand<object>(_ => GoToWithdraw(), Validation.AlwaysExecute);
             }
         }
 
@@ -133,11 +113,10 @@ namespace ATMInterface.ViewModels
         {
             get
             {
-                return _exitCommand ??= new RelayCommand<object>(_ => ExecuteExit(), CanExecuteExit);
+                return _exitCommand ??= new RelayCommand<object>(_ => ExecuteExit(), Validation.AlwaysExecute);
             }
         }
 
-        // onPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {

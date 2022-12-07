@@ -27,7 +27,7 @@ namespace ATMInterface
 		private eCommutator commutator;
 		private eATM currentATM;
 		private ePaymentSystem ps;
-		private ePrivatBank pb;
+		private eMonobank mb;
 
         private void Killing_App(object sender, CancelEventArgs e)
         {
@@ -61,7 +61,7 @@ namespace ATMInterface
         
         public void GoToMain()
         {
-            Content = new MainView(GoToAuth, GoToAdd, GoToWithdraw, GoToCheckBalance);
+            Content = new MainView(GoToAuth, GoToAdd, GoToWithdraw, GoToCheckBalance, currentATM);
         }
         public void GoToAdd()
         {
@@ -83,12 +83,10 @@ namespace ATMInterface
         public void InitATM()
         {
 			commutator = new eCommutator();
-			pb = new ePrivatBank(commutator);
-			currentATM = new eATM(commutator, pb);
+			mb = new eMonobank(commutator);
+			currentATM = new eATM(commutator, mb);
 			ps = new ePaymentSystem(commutator);
 		}
 		#endregion
-
-
 	}
 }
