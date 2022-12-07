@@ -54,9 +54,8 @@ namespace ATMInterface.AccesDataSQL
                 try
                 {
                     var output = cnn.QuerySingle<Card>("select pasword from card where id_number =" + id_card, 1);
-                    
-                    if(password == output.Pasword) {  return true; }
-                    else return false;
+
+                    return (password == output.Pasword);
                 }
                 catch
                 {
@@ -93,6 +92,7 @@ namespace ATMInterface.AccesDataSQL
                     return output;
                 }
                 catch {
+                    MessageBox.Show("smth goes wrong with id of a card");
                     return null;
                 }
                 
@@ -100,7 +100,7 @@ namespace ATMInterface.AccesDataSQL
         }
 
 
-        public static Card_bank LoadBank(string id_bank)
+        public static Card_bank? LoadBank(string id_bank)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
@@ -117,8 +117,25 @@ namespace ATMInterface.AccesDataSQL
             }
         }
 
+        public static string LoadBankName(string id_bank)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                try
+                {
+                    Card_bank output = cnn.QuerySingle<Card_bank>("select * from bank where id_number = " + id_bank, 1);
+                    return output.Name;
+                }
+                catch
+                {
+                    return null;
+                }
 
-                private static string LoadConnectionString(string id = "Default")
+            }
+        }
+
+
+        private static string LoadConnectionString(string id = "Default")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
