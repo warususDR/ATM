@@ -9,7 +9,7 @@ using System.Windows.Documents;
 
 namespace ATMInterface.Tools.Utilities
 {
-    internal class PrintBalanceUitlity
+    internal class PrintBalanceUtility
     {
         private static FlowDocument BuildBalanceDoc(string cardNumber, string balance)
         { 
@@ -60,9 +60,9 @@ namespace ATMInterface.Tools.Utilities
                 printDialog.PrintDocument(idpSource.DocumentPaginator, "Balance");
                 return true;
             }
-            catch (Exception e)
+            catch 
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show("Print error!", "ATM", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 return false;
             }

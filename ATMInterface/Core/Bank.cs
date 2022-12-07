@@ -114,7 +114,7 @@ namespace ATM
                     answer = card.Balance;
                     break;
                 case eUserAction.GET_CASH:
-                    answer = (card.Balance >= 0 && (card.Balance - money) >= 0) ? 1 : 0;
+                    answer = (card.Balance > 0 && (card.Balance - money) > 0) ? 1 : 0;
                     if(answer == 1) { SqlDataAccess.UpdateBalance(id, (card.Balance - money)); }
                     break;
                 case eUserAction.PUT_CASH:
