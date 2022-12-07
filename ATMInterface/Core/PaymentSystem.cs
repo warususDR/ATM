@@ -29,11 +29,11 @@ namespace ATM
                 {
                     ReqSenders.Push(payload.Header.src);
                     if (BankEmitent == null) BankEmitent = "monobank";//here should be method to get name from db
-                    send(eLogger.GenerateLog(payload.Header.action, payload.UserData, BankEmitent, Name, payload.Header.type));
+                    send(eLogger.GenerateLog(payload.Header.action, payload.UserData, BankEmitent, Name, payload.Header.type, payload.Header.result));
                 }
                 else
                 {
-                    send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, payload.Header.type));
+                    send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, payload.Header.type, payload.Header.result));
                 }
                 return true;
             }

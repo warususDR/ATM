@@ -22,7 +22,7 @@ namespace ATM
     public class eMonobank : eBank 
     {
         private eBankUser CurrentUser { get; set; }
-        int queryAnswer;//shit code might delete later
+        int queryAnswer;
         public eMonobank(eCommutator _commutator)
             : base("monobank", _commutator)
         {
@@ -73,12 +73,12 @@ namespace ATM
                     }
                     else
                     {
-                        send(eLogger.GenerateLog(payload.Header.action, payload.UserData, "PAYMENT_SYSTEM", Name, payload.Header.type));
+                        send(eLogger.GenerateLog(payload.Header.action, payload.UserData, "PAYMENT_SYSTEM", Name, payload.Header.type, payload.Header.result));
                     }
                 }
                 else//answer
                 {
-                    send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, payload.Header.type));
+                    send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, payload.Header.type, payload.Header.result));
                 }
                 return true;
             }
@@ -102,28 +102,24 @@ namespace ATM
             switch (payload.Header.action)
             {
                 case eUserAction.CREDIT_CARD_INSERTED:
-                    answer = cardIsValid ? 1 : 0;
-                    break;
+                    return cardIsValid ? Result.SUCCESS : Result.FAIL;
                 case eUserAction.PASSWORD_ENTERED:
-                    answer = SqlDataAccess.CorrectPassword(id, pass) ? 1 : 0;
-                    break;
+                    return SqlDataAccess.CorrectPassword(id, pass) ? Result.SUCCESS : Result.FAIL;
                 case eUserAction.CHECK_BALANCE:
                     answer = card.Balance;
-                    break;
+                    return Result.SUCCESS;
                 case eUserAction.PRINT_BALANCE:
                     answer = card.Balance;
-                    break;
+                    return Result.SUCCESS;
                 case eUserAction.GET_CASH:
-                    answer = (card.Balance > 0 && (card.Balance - money) > 0) ? 1 : 0;
-                    if(answer == 1) { SqlDataAccess.UpdateBalance(id, (card.Balance - money)); }
-                    break;
+                    if (card.Balance > 0 && (card.Balance - money) > 0) { SqlDataAccess.UpdateBalance(id, (card.Balance - money)); return Result.SUCCESS; }
+                    else return Result.FAIL;
                 case eUserAction.PUT_CASH:
-                    answer = (money <= put_limit) ? 1 : 0;
-                    if (answer == 1) { SqlDataAccess.UpdateBalance(id, (money + card.Balance)); }
-                    break;
+                    if (money <= put_limit) { SqlDataAccess.UpdateBalance(id, (money + card.Balance)); return Result.SUCCESS; }
+                    else return Result.FAIL;
+                default:
+                    return Result.ERROR;
             }
-
-            return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
         }
     }
 }

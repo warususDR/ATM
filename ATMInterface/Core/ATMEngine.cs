@@ -60,7 +60,7 @@ namespace ATM
                     }
                     else
                     {
-                        result = _payload.Header.result.Equals("FAIL") ? -1 : _payload.Header.result.Equals("ERROR") ? 0 : 1;
+                        result = _payload.Header.result.Equals(Result.ERROR) ? -1 : _payload.Header.result.Equals(Result.FAIL) ? 0 : 1;
                     }
                 }
             }
