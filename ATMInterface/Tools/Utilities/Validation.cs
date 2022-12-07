@@ -26,5 +26,10 @@ namespace ATMInterface.Tools.Utilities
         {
             return currency.IsMatch(text);
         }
+
+        public static bool AlwaysExecute(object obj)
+        {
+            return true;
+        }
     }
 }

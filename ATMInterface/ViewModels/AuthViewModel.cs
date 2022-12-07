@@ -19,18 +19,12 @@ namespace ATMInterface.ViewModels
         private Action _goToPinEnter;
 		public eATM CurrentATM { get; set; }
 
-
         private RelayCommand<object> _authorizeCommand;
         private RelayCommand<object> _exitCommand;
 
         private bool CanExecuteAuthorize(Object obj)
         {
             return Validation.HasCreditCardNumberFormat(UserInput);
-        }
-
-        private bool CanExecuteExit(Object obj)
-        {
-            return true; // validation here
         }
 
         private void ExecuteAuthorize()
@@ -96,11 +90,10 @@ namespace ATMInterface.ViewModels
         {
             get
             {
-                return _exitCommand ??= new RelayCommand<object>(_ => ExecuteExit(), CanExecuteExit);
+                return _exitCommand ??= new RelayCommand<object>(_ => ExecuteExit(), Validation.AlwaysExecute);
             }
         }
 
-        // onPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
