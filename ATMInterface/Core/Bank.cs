@@ -113,11 +113,13 @@ namespace ATM
                 case eUserAction.PRINT_BALANCE:
                     answer = card.Balance;
                     break;
-                case eUserAction.PUT_CASH:
-                    answer = (card.Balance >= 0 && (card.Balance - money) >= 0) ? 1 : 0;
-                    break;
                 case eUserAction.GET_CASH:
+                    answer = (card.Balance >= 0 && (card.Balance - money) >= 0) ? 1 : 0;
+                    if(answer == 1) { SqlDataAccess.UpdateBalance(id, (card.Balance - money)); }
+                    break;
+                case eUserAction.PUT_CASH:
                     answer = (money <= put_limit) ? 1 : 0;
+                    if (answer == 1) { SqlDataAccess.UpdateBalance(id, (money + card.Balance)); }
                     break;
             }
 
