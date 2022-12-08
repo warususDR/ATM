@@ -29,13 +29,17 @@ namespace ATMInterface
 		private ePaymentSystem ps;
 		private eMonobank mb;
 
-        private void Killing_App(object sender, CancelEventArgs e)
+        private void KillingApp(object sender, CancelEventArgs e)
         {
             string msg = "Are you sure you want to exit???";
             MessageBoxResult result = MessageBox.Show(msg,"ATM", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.No)
             {
                 e.Cancel = true;
+            }
+            else
+            {
+                currentATM.Engine.SessionIsOver();
             }
             
         }
