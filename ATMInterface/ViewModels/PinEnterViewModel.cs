@@ -40,8 +40,11 @@ namespace ATMInterface.ViewModels
             }
             else if(actionSuccess == -1)
             {
-                string msg = "Error Occured!";
+                string msg = "0 password input attempts left!";
                 MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                CurrentATM.Engine.SessionIsOver();
+                GoToAuth();
             }
         }
 
