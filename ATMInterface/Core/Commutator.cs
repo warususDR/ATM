@@ -15,17 +15,17 @@ namespace ATM
             nodes = new List<Node>();
         }
 
-        public void send(eLog _payload) { nodes.Find(i => i.Name == _payload.Header.dst).receive(_payload); }//sending payload to a dst from header
+        public void Send(eLog _payload) { nodes.Find(i => i.Name == _payload.Header.dst).Receive(_payload); }//sending payload to a dst from header
 
-        public void register(Node node) { nodes.Add(node); }//nodes register themselves in commutator
+        public void Register(Node node) { nodes.Add(node); }//nodes register themselves in commutator
     }
 
     public abstract class Node
     {
 
         protected eCommutator Owner { get; set; }//node owner where nodes register themselves
-        protected void init() { if (Owner != null)  Owner.register(this); }//register node in commutator
-        protected void send(eLog _payload) { if (Owner != null) Owner.send(_payload); }//send payload by commutator
+        protected void Init() { if (Owner != null)  Owner.Register(this); }//register node in commutator
+        protected void Send(eLog _payload) { if (Owner != null) Owner.Send(_payload); }//send payload by commutator
         
         public Node(string name, eCommutator commutator) 
         {
@@ -35,6 +35,7 @@ namespace ATM
         }
         public string Name { get; set; }//node name to find it by among others
         public Stack<string> ReqSenders { get; set; }//remember where to send an ack for req
-        public abstract void receive(eLog payload);//override what you gonna do with received payload
+        public void Receive(eLog payload) { Process(payload); }//override what you gonna do with received payload
+        protected abstract void Process(eLog payload);
     }
 }

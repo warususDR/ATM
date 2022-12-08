@@ -8,20 +8,12 @@ namespace ATM
 {
     public class eATM
     {
-        /*private ePrinter printer;*/
         private eATMEngine engine;
         public eATMEngine Engine => engine;
-        /*
-        internal ePrinter Printer { get => printer; set => printer = value; }*/
 
         public eATM(eCommutator _commutator, eBank _bankAcquire)
         {
             engine = new eATMEngine(this, _commutator, _bankAcquire);
         }
     }
-
-    /*internal class ePrinter
-    {
-        
-    }*/
 }

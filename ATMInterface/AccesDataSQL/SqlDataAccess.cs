@@ -123,7 +123,7 @@ namespace ATMInterface.AccesDataSQL
             {
                 try
                 {
-                    Card_bank output = cnn.QuerySingle<Card_bank>("select * from bank where id_number = " + id_bank, 1);
+                    Card_bank output = cnn.QuerySingle<Card_bank>("select * from card_bank where id_bank = " + id_bank, 1);
                     return output.Name;
                 }
                 catch
