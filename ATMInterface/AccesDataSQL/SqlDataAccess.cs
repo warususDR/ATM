@@ -30,6 +30,8 @@ namespace ATMInterface.AccesDataSQL
            
         }
 
+
+
         public static bool ExistsId(string id_card)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
@@ -134,6 +136,20 @@ namespace ATMInterface.AccesDataSQL
             }
         }
 
+        public static string LoadCurrency(string id_card)
+        {
+            string currency = "";
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.QuerySingle<Card>("select currency from card where id_number = " + id_card, 1);
+                currency = output.Currency;
+
+                // MessageBox.Show(mybalance.ToString());
+                return currency;
+            }
+
+
+        }
 
         private static string LoadConnectionString(string id = "Default")
         {
