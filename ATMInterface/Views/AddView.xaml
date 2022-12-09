@@ -24,7 +24,7 @@
         </Border>
 
         <TextBlock Name="AddFundsCaption" Grid.Row="1" Grid.Column="0" Text="Enter the amount of funds you want to add:" />
-        <TextBox x:Name="AddFundsField" Grid.Row="1" Grid.Column="1" Text="{Binding UserInput, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox x:Name="AddFundsField" Grid.Row="1" Grid.Column="1" Text="{Binding UserInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Button Name="CancelButton" Grid.Row="2" Grid.Column="0" Content="Cancel" Command="{Binding CancelCommand}" />
         <Button Name ="ProceedButton" Grid.Row="2" Grid.Column="1" Content="Proceed" Command="{Binding AddCommand}" />

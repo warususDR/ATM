@@ -15,6 +15,7 @@ namespace ATMInterface.ViewModels
     class PinEnterViewModel : INotifyPropertyChanged
     {
         private string _userInput;
+        private int _inputAttempts;
 
         private Action _goToMain;
         private Action _goToAuth;
@@ -32,14 +33,17 @@ namespace ATMInterface.ViewModels
         private void ExecuteAcceptPin()
         {
             int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.PASSWORD_ENTERED, UserInput);
+            UserInput = "";
             if (actionSuccess == 1) GoToMain();
             else if (actionSuccess == 0)
             {
-                string msg = "Incorrect Pin Entered!";
+                InputAttempts--;
+                string msg = $"Incorrect Pin Entered! {InputAttempts} password input attempts left!";
                 MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else if(actionSuccess == -1)
             {
+                InputAttempts--;
                 string msg = "0 password input attempts left!";
                 MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -58,11 +62,23 @@ namespace ATMInterface.ViewModels
             }
         }
 
+        public int InputAttempts
+        {
+            get { return _inputAttempts; }
+            set
+            {
+                _inputAttempts = value;
+                OnPropertyChanged();
+            }
+        }
+
         public PinEnterViewModel(Action goToMain, Action goToAuth, eATM atm)
         {
             _goToMain = goToMain;
             _goToAuth = goToAuth;
             CurrentATM = atm;
+            UserInput = "";
+            InputAttempts = 3;
         }
 
         public void GoToMain()

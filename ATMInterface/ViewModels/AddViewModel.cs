@@ -30,10 +30,11 @@ namespace ATMInterface.ViewModels
         private void ExecuteAdd()
         {
             int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.PUT_CASH, UserInput);
+            UserInput = "";
             if (actionSuccess == 1)
             {
-                MessageBox.Show("Successfully added cash!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 GoToMain();
+                MessageBox.Show("Successfully added cash!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else if (actionSuccess == 0)
             {
@@ -61,6 +62,7 @@ namespace ATMInterface.ViewModels
         {
             _goToMain = goToMain;
             CurrentATM = atm;
+            UserInput = "";
         }
 
         public void GoToMain()

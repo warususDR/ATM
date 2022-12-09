@@ -31,6 +31,7 @@ namespace ATMInterface.ViewModels
         {
             CurrentATM.Engine.OnNewSession();
             int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.CREDIT_CARD_INSERTED, UserInput);
+            UserInput = "";
             if (actionSuccess == 1)
             {
                 GoToPinEnter();
@@ -71,6 +72,7 @@ namespace ATMInterface.ViewModels
         {
             _goToPinEnter = goToPinEnter;
             CurrentATM = currentATM;
+            UserInput = "";
         }
 
         public void GoToPinEnter()

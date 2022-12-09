@@ -30,6 +30,7 @@ namespace ATMInterface.ViewModels
         private void ExecuteWithdraw()
         {
             int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.GET_CASH, UserInput);
+            UserInput = "";
             if (actionSuccess == 1)
             {
                 GoToMain();
@@ -61,6 +62,7 @@ namespace ATMInterface.ViewModels
         {
             _goToMain = goToMain;
             CurrentATM = atm;
+            UserInput = "";
         }
 
             public void GoToMain()

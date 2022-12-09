@@ -23,7 +23,7 @@
         <TextBlock Style="{StaticResource WelcomeCaption}" Name = "WelcomeCaption" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Please enter your credit card number and pin to authorize" />
 
         <TextBlock Name = "CardNumberCaption" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Enter credit card number:" />
-        <TextBox Name="CardNumberField" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding UserInput, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Name="CardNumberField" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding UserInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Button Name="Exit" Grid.Row="3" Grid.Column="0" Content="Exit" Command="{Binding ExitCommand}" />
         <Button Name="Authorize" Grid.Row="3" Grid.Column="1" Content="Proceed" Command="{Binding AuthorizeCommand}"/>
