@@ -13,31 +13,30 @@ namespace ATM
     public abstract class eBank : Node
     {
         protected static int PASSWORD_ATTEMPTS = 3;
-
-        public List<eATMEngine> ATMNetwork { get; set; }
-        public eBank(string name, eCommutator _commutator)
-            : base(name, _commutator)
-        {}
-
-        public abstract bool ATMregister(eATMEngine newATM);
-        protected abstract Result ProcessQuery(eLog payload, out int answer);
-    }
-
-    public class eMonobank : eBank 
-    {
+        protected static int COMISSION_PERCENTAGE;
+        protected static string BANK_CODE;
         private eBankUser CurrentUser { get; set; }
-        int queryAnswer;
-        int passwordInputAttempts;
-        public eMonobank(eCommutator _commutator)
-            : base("monobank", _commutator)
+        private int queryAnswer;
+        private int passwordInputAttempts;
+        public List<eATMEngine> ATMNetwork { get; set; }
+        public eBank(string bankCode, eCommutator _commutator)
+            : base(SqlDataAccess.LoadBankName(BANK_CODE), _commutator)
         {
             ATMNetwork = new List<eATMEngine>();
+            BANK_CODE = bankCode;
+
+            COMISSION_PERCENTAGE = SqlDataAccess.LoadBankComission(BANK_CODE);
             Init();
         }
-        public override bool ATMregister(eATMEngine newATM)
+        public bool ATMregister(eATMEngine newATM)
         {
             ATMNetwork.Add(newATM);
             return true;
+        }
+        
+        public int GetComission()
+        {
+            return COMISSION_PERCENTAGE;
         }
 
         private bool SessionOff(eLog payload)
@@ -52,7 +51,7 @@ namespace ATM
 
         private void ProcessAction(eLog payload)
         {
-            switch(payload.Header.action)
+            switch (payload.Header.action)
             {
                 case eUserAction.CREDIT_CARD_INSERTED:
                     CreditCardInserted(payload);
@@ -76,9 +75,9 @@ namespace ATM
         private void NewDataEntered(eLog payload)
         {
             var data = CurrentUser.UserData;
-            data.MoneyAmount = payload.UserData.MoneyAmount == 0? data.MoneyAmount : payload.UserData.MoneyAmount;
-            data.СardNumber = payload.UserData.СardNumber == null? data.СardNumber : payload.UserData.СardNumber;
-            data.Password = payload.UserData.Password == null? data.Password : payload.UserData.Password; 
+            data.MoneyAmount = payload.UserData.MoneyAmount == 0 ? data.MoneyAmount : payload.UserData.MoneyAmount;
+            data.СardNumber = payload.UserData.СardNumber == null ? data.СardNumber : payload.UserData.СardNumber;
+            data.Password = payload.UserData.Password == null ? data.Password : payload.UserData.Password;
             CurrentUser.UserData = data;
         }
 
@@ -109,9 +108,9 @@ namespace ATM
                         Result res = ProcessQuery(payload, out queryAnswer);
 
                         if (res == Result.FAIL && payload.Header.action == eUserAction.PASSWORD_ENTERED) passwordInputAttempts--;
-                        if(queryAnswer != -1) CheckBalance(payload);
+                        if (queryAnswer != -1) CheckBalance(payload);
 
-                        if(payload.Header.action == eUserAction.PASSWORD_ENTERED && passwordInputAttempts == 0)
+                        if (payload.Header.action == eUserAction.PASSWORD_ENTERED && passwordInputAttempts == 0)
                             Send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, LogType.Ack, Result.ERROR));
                         else Send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, LogType.Ack, res));
                     }
@@ -126,7 +125,9 @@ namespace ATM
                 }
             }
         }
-        protected override Result ProcessQuery(eLog payload, out int answer)
+
+    
+        protected Result ProcessQuery(eLog payload, out int answer)
         {
             string id = CurrentUser.UserData.СardNumber;
             string pass = CurrentUser.UserData.Password;
