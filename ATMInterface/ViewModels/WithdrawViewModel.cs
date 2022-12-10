@@ -29,7 +29,8 @@ namespace ATMInterface.ViewModels
             bool isValid = Validation.HasCurrencyFormat(UserInput);
             if (isValid)
             {
-                Comission = "test";
+                var comissionPercentage = ((iBank)CurrentATM.Engine.BankAcquire).GetComission();
+                Comission = comissionPercentage.ToString() + "% = " + (Int32.Parse(UserInput) * comissionPercentage / 100).ToString() + "$";
                 ComissionVisibility = Visibility.Visible;
             }
             else

@@ -7,6 +7,7 @@ namespace ATM
     public class eATMEngine : Node
     {
         private eBank bankAcquire;
+        public eBank BankAcquire => bankAcquire;
         private eATM ATMowner;
         private bool sessionIsOn = false;
         private int result = 0;
