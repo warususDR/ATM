@@ -29,7 +29,7 @@ namespace ATMInterface.Tools.Utilities
             Paragraph cardNumPar = new Paragraph(new Run($"Card number: {cardNumber}"));
             section.Blocks.Add(cardNumPar);
 
-            Paragraph balancePar = new Paragraph(new Run($"Your Balance: {balance}"));
+            Paragraph balancePar = new Paragraph(new Run($"Your Balance: {balance} $"));
             section.Blocks.Add(balancePar);
 
             Paragraph currentTime = new Paragraph(new Run($"Time of print: {DateTime.Now}"));

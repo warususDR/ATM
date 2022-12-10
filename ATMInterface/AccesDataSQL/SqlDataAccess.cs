@@ -172,22 +172,5 @@ namespace ATMInterface.AccesDataSQL
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
-
-        public static float? LoadBankComission(string id_bank)
-        {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                try
-                {
-                    Card_bank output = cnn.QuerySingle<Card_bank>("select * from card_bank where id_bank = " + id_bank, 1);
-                    return output.Com_put;
-                }
-                catch
-                {
-                    return null;
-                }
-
-            }
-        }
     }
 }

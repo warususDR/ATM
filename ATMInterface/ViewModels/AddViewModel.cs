@@ -15,6 +15,8 @@ namespace ATMInterface.ViewModels
     class AddViewModel : INotifyPropertyChanged
     {
         private string _userInput;
+        private string _comission;
+        private Visibility _comissionVisibility;
 
         private Action _goToMain;
 
@@ -24,7 +26,17 @@ namespace ATMInterface.ViewModels
 
         private bool CanExecuteAdd(Object obj)
         {
-            return Validation.HasCurrencyFormat(UserInput);
+            bool isValid = Validation.HasCurrencyFormat(UserInput);
+            if (isValid) 
+            {
+                Comission = "test";
+                ComissionVisibility = Visibility.Visible;
+            }
+            else
+            {
+                ComissionVisibility = Visibility.Hidden;
+            }
+            return isValid;
         }
 
         private void ExecuteAdd()
@@ -58,11 +70,33 @@ namespace ATMInterface.ViewModels
             }
         }
 
+        public string Comission
+        {
+            get { return _comission; }
+            set
+            {
+                _comission = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Visibility ComissionVisibility
+        {
+            get { return _comissionVisibility; }
+            set
+            {
+                _comissionVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
         public AddViewModel(Action goToMain, eATM atm)
         {
             _goToMain = goToMain;
             CurrentATM = atm;
             UserInput = "";
+            Comission = "";
+            ComissionVisibility = Visibility.Hidden;
         }
 
         public void GoToMain()
