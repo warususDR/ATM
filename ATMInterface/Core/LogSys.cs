@@ -75,7 +75,7 @@ namespace ATM
         public eHeader Header => _header;
         private eHeader _header;
 
-        internal void ApplyData(Data userData)//shit
+        internal void ApplyData(Data userData)
         {
             if(userData.Password != null) { this._data.Password = userData.Password; }
             if(userData.СardNumber != null) { this._data.СardNumber = userData.СardNumber; }
