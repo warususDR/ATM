@@ -10,7 +10,18 @@ using System.Threading.Tasks;
 
 namespace ATM
 {
-    public abstract class eBank : Node
+
+    public interface iBank
+    {
+        public abstract bool ATMregister(eATMEngine newATM);
+        public abstract int GetComission();
+        public abstract bool SessionOff(eLog payload);
+        public abstract void ProcessAction(eLog payload);
+        public abstract void CreditCardInserted(eLog payload);
+        public abstract void NewDataEntered(eLog payload);
+        public abstract void CheckBalance(eLog payload);
+    }
+    public class eBank : Node, iBank
     {
         protected static int PASSWORD_ATTEMPTS = 3;
         protected static int COMISSION_PERCENTAGE;
@@ -28,18 +39,18 @@ namespace ATM
             COMISSION_PERCENTAGE = SqlDataAccess.LoadBankComission(BANK_CODE);
             Init();
         }
-        public bool ATMregister(eATMEngine newATM)
+        bool iBank.ATMregister(eATMEngine newATM)
         {
             ATMNetwork.Add(newATM);
             return true;
         }
         
-        public int GetComission()
+        int iBank.GetComission()
         {
             return COMISSION_PERCENTAGE;
         }
 
-        private bool SessionOff(eLog payload)
+        bool iBank.SessionOff(eLog payload)
         {
             if (payload.Header.action == eUserAction.SESSION_OFF)
             {
@@ -49,30 +60,30 @@ namespace ATM
             return false;
         }
 
-        private void ProcessAction(eLog payload)
+        void iBank.ProcessAction(eLog payload)
         {
             switch (payload.Header.action)
             {
                 case eUserAction.CREDIT_CARD_INSERTED:
-                    CreditCardInserted(payload);
+                    ((iBank)this).CreditCardInserted(payload);
                     break;
                 case eUserAction.PUT_CASH:
                 case eUserAction.GET_CASH:
                 case eUserAction.PASSWORD_ENTERED:
-                    NewDataEntered(payload);
+                    ((iBank)this).NewDataEntered(payload);
                     break;
 
             }
         }
 
-        private void CreditCardInserted(eLog payload)
+        void iBank.CreditCardInserted(eLog payload)
         {
             CurrentUser = new eBankUser();
             passwordInputAttempts = PASSWORD_ATTEMPTS;
-            NewDataEntered(payload);
+            ((iBank)this).NewDataEntered(payload);
         }
 
-        private void NewDataEntered(eLog payload)
+        void iBank.NewDataEntered(eLog payload)
         {
             var data = CurrentUser.UserData;
             data.MoneyAmount = payload.UserData.MoneyAmount == 0 ? data.MoneyAmount : payload.UserData.MoneyAmount;
@@ -81,7 +92,7 @@ namespace ATM
             CurrentUser.UserData = data;
         }
 
-        private void CheckBalance(eLog payload)
+        void iBank.CheckBalance(eLog payload)
         {
             if (payload.Header.action == eUserAction.CHECK_BALANCE)
             {
@@ -101,14 +112,14 @@ namespace ATM
                     ReqSenders.Push(payload.Header.src);
                     if (ReqSenders.Peek() == "PAYMENT_SYSTEM")
                     {
-                        if (SessionOff(payload)) return;
+                        if (((iBank)this).SessionOff(payload)) return;
 
-                        ProcessAction(payload);
+                        ((iBank)this).ProcessAction(payload);
 
                         Result res = ProcessQuery(payload, out queryAnswer);
 
                         if (res == Result.FAIL && payload.Header.action == eUserAction.PASSWORD_ENTERED) passwordInputAttempts--;
-                        if (queryAnswer != -1) CheckBalance(payload);
+                        if (queryAnswer != -1) ((iBank)this).CheckBalance(payload);
 
                         if (payload.Header.action == eUserAction.PASSWORD_ENTERED && passwordInputAttempts == 0)
                             Send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, LogType.Ack, Result.ERROR));
