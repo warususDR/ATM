@@ -16,7 +16,7 @@ namespace ATM
         {
             this.ATMowner = _owner;
             bankAcquire = _bankAcquire;
-            bankAcquire.ATMregister(this);
+            ((iBank)bankAcquire).ATMregister(this);
             Init();
         }
         public void OnNewSession()//to use by interface
