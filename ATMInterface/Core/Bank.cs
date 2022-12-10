@@ -31,7 +31,7 @@ namespace ATM
         private int passwordInputAttempts;
         public List<eATMEngine> ATMNetwork { get; set; }
         public eBank(string bankCode, eCommutator _commutator)
-            : base(SqlDataAccess.LoadBankName(BANK_CODE), _commutator)
+            : base(SqlDataAccess.LoadBankName(bankCode), _commutator)
         {
             ATMNetwork = new List<eATMEngine>();
             BANK_CODE = bankCode;
