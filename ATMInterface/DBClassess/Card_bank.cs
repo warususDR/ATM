@@ -14,7 +14,7 @@ namespace ATMInterface.DBClassess
         public int Usd_sell { get; set; }
         public int Eur_buy { get; set; }
         public int Eur_sell { get; set; }
-        public int Com_to_us { get; set; }
-        public int Com_from_us { get; set; }
+        public int Com_put { get; set; }
+        public int Com_withdr { get; set; }
     }
 }

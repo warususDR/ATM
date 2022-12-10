@@ -36,7 +36,7 @@ namespace ATM
             ATMNetwork = new List<eATMEngine>();
             BANK_CODE = bankCode;
 
-            COMISSION_PERCENTAGE = SqlDataAccess.LoadBankComission(BANK_CODE);
+            COMISSION_PERCENTAGE = (int)SqlDataAccess.LoadBankComission(BANK_CODE); //TO DO
             Init();
         }
         bool iBank.ATMregister(eATMEngine newATM)
