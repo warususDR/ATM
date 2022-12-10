@@ -19,7 +19,7 @@ namespace ATM
         public abstract void ProcessAction(eLog payload);
         public abstract void CreditCardInserted(eLog payload);
         public abstract void NewDataEntered(eLog payload);
-        public abstract void CheckBalance(eLog payload);
+        public abstract void CheckPrintBalance(eLog payload);
     }
     public class eBank : Node, iBank
     {
@@ -92,11 +92,11 @@ namespace ATM
             CurrentUser.UserData = data;
         }
 
-        void iBank.CheckBalance(eLog payload)
+        void iBank.CheckPrintBalance(eLog payload)
         {
-            if (payload.Header.action == eUserAction.CHECK_BALANCE)
+            if (payload.Header.action == eUserAction.CHECK_BALANCE || payload.Header.action == eUserAction.PRINT_BALANCE)
             {
-                Data balanceData = new Data();
+                Data balanceData = CurrentUser.UserData;
                 balanceData.MoneyAmount = queryAnswer;
                 payload.ApplyData(balanceData);
             }
@@ -119,7 +119,7 @@ namespace ATM
                         Result res = ProcessQuery(payload, out queryAnswer);
 
                         if (res == Result.FAIL && payload.Header.action == eUserAction.PASSWORD_ENTERED) passwordInputAttempts--;
-                        if (queryAnswer != -1) ((iBank)this).CheckBalance(payload);
+                        if (queryAnswer != -1) ((iBank)this).CheckPrintBalance(payload);
 
                         if (payload.Header.action == eUserAction.PASSWORD_ENTERED && passwordInputAttempts == 0)
                             Send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, LogType.Ack, Result.ERROR));
