@@ -151,6 +151,23 @@ namespace ATMInterface.AccesDataSQL
 
         }
 
+        public static int? LoadBankComission(string id_bank)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                try
+                {
+                    Card_bank output = cnn.QuerySingle<Card_bank>("select * from card_bank where id_bank = " + id_bank, 1);
+                    return output.Com_put;
+                }
+                catch
+                {
+                    return null;
+                }
+
+            }
+        }
+
         private static string LoadConnectionString(string id = "Default")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
