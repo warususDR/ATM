@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
 using Dapper;
 using ATMInterface.DBClassess;
-using System.Windows;
 
 
 namespace ATMInterface.AccesDataSQL
@@ -23,7 +17,6 @@ namespace ATMInterface.AccesDataSQL
                     var output = cnn.QuerySingle<Card>("select balance from card where id_number = " + id_card, 1);
                     mybalance = output.Balance;
 
-                    // MessageBox.Show(mybalance.ToString());
                     return mybalance;
                 }
 
@@ -38,7 +31,6 @@ namespace ATMInterface.AccesDataSQL
             {
                 try {
                     var output = cnn.QuerySingle("select id_number from card where id_number =" + id_card, 1);
-                    //MessageBox.Show(output.ToString());
                     return true;
                 }
                 catch {
@@ -94,7 +86,6 @@ namespace ATMInterface.AccesDataSQL
                     return output;
                 }
                 catch {
-                    //MessageBox.Show("smth goes wrong with id of a card");
                     return null;
                 }
                 
@@ -143,8 +134,6 @@ namespace ATMInterface.AccesDataSQL
             {
                 var output = cnn.QuerySingle<Card>("select currency from card where id_number = " + id_card, 1);
                 currency = output.Currency;
-
-                // MessageBox.Show(mybalance.ToString());
                 return currency;
             }
 

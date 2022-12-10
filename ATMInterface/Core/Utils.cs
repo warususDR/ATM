@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ATM
+﻿namespace ATM
 {
     public enum eUserAction
     {
@@ -23,5 +17,13 @@ namespace ATM
         ERROR = -1,
         FAIL = 0,
         SUCCESS = 1,
-    }    
+    }
+
+    internal class Utils
+    {
+        public static string CalculateComission(int comissionPercentage, string balance)
+        {
+            return $"{comissionPercentage}% = {int.Parse(balance) * comissionPercentage / 100}$";
+        }
+    }
 }

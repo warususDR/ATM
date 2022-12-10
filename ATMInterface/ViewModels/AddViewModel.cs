@@ -2,12 +2,8 @@
 using ATMInterface.Tools;
 using ATMInterface.Tools.Utilities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ATMInterface.ViewModels
@@ -30,7 +26,7 @@ namespace ATMInterface.ViewModels
             if (isValid) 
             {
                 var comissionPercentage = ((iBank)CurrentATM.Engine.BankAcquire).GetComission();
-                Comission = comissionPercentage.ToString() + "% = " + (Int32.Parse(UserInput) * comissionPercentage / 100).ToString() + "$";
+                Comission = Utils.CalculateComission(comissionPercentage, UserInput);
                 ComissionVisibility = Visibility.Visible;
             }
             else
