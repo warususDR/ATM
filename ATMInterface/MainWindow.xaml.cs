@@ -28,6 +28,7 @@ namespace ATMInterface
 		private eATM currentATM;
 		private ePaymentSystem ps;
 		private eMonobank mb;
+        private ePrivatBank pb;
 
         private void KillingApp(object sender, CancelEventArgs e)
         {
@@ -88,6 +89,7 @@ namespace ATMInterface
         {
 			commutator = new eCommutator();
 			mb = new eMonobank(commutator);
+            pb = new ePrivatBank(commutator);
 			currentATM = new eATM(commutator, mb);
 			ps = new ePaymentSystem(commutator);
 		}
