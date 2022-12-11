@@ -94,8 +94,10 @@ namespace ATM
             if (cardIsValid) 
             {
                 card = SqlDataAccess.LoadInfo(id);
-            } 
-
+            }
+            int com;
+            
+            double comis = (double)(COMISSION_PERCENTAGE)/100;
             int put_limit = 1000;
             answer = -1;
 
@@ -117,10 +119,22 @@ namespace ATM
                     answer = (card.Balance > 0 && (card.Balance - money) > 0) ? 1 : 0;
                     if(answer == 1) { SqlDataAccess.UpdateBalance(id, (card.Balance - money)); }
                     break;
+                    if (card.Balance > 0 && (card.Balance - money) >= 0) {
+                        com =(int) (money * comis);
+                        SqlDataAccess.UpdateBalance(id, (card.Balance - (money + com))); 
+                        return Result.SUCCESS; }
+                    else return Result.FAIL;
                 case eUserAction.PUT_CASH:
                     answer = (money <= put_limit) ? 1 : 0;
                     if (answer == 1) { SqlDataAccess.UpdateBalance(id, (money + card.Balance)); }
                     break;
+                    if (money <= put_limit) {
+                        com = (int) (money * comis);
+                        SqlDataAccess.UpdateBalance(id, ((money + card.Balance) - com));
+                        return Result.SUCCESS; }
+                    else return Result.FAIL;
+                default:
+                    return Result.ERROR;
             }
 
             return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
