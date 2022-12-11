@@ -13,6 +13,7 @@ namespace ATM
         public abstract void ProcessAction(eLog payload);
         public abstract void CreditCardInserted(eLog payload);
         public abstract void NewDataEntered(eLog payload);
+        public abstract void CountComission();
         public abstract void CheckPrintBalance(eLog payload);
     }
     public class eBank : Node, iBank
@@ -61,11 +62,17 @@ namespace ATM
                 case eUserAction.CREDIT_CARD_INSERTED:
                     ((iBank)this).CreditCardInserted(payload);
                     break;
-                case eUserAction.PUT_CASH:
-                case eUserAction.GET_CASH:
+                
                 case eUserAction.PASSWORD_ENTERED:
                     ((iBank)this).NewDataEntered(payload);
                     break;
+                case eUserAction.PUT_CASH:
+                case eUserAction.GET_CASH:
+                    {
+                        ((iBank)this).NewDataEntered(payload);
+                        ((iBank)this).CountComission();
+                        break;
+                    }
 
             }
         }
@@ -83,6 +90,12 @@ namespace ATM
             data.MoneyAmount = payload.UserData.MoneyAmount == 0 ? data.MoneyAmount : payload.UserData.MoneyAmount;
             data.СardNumber = payload.UserData.СardNumber == null ? data.СardNumber : payload.UserData.СardNumber;
             data.Password = payload.UserData.Password == null ? data.Password : payload.UserData.Password;
+            CurrentUser.UserData = data;
+        }
+        void iBank.CountComission()
+        {
+            var data = CurrentUser.UserData;
+            data.MoneyAmount = (100 - COMISSION_PERCENTAGE) * data.MoneyAmount / 100;
             CurrentUser.UserData = data;
         }
 
