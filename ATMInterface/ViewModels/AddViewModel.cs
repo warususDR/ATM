@@ -22,7 +22,7 @@ namespace ATMInterface.ViewModels
 
         private bool CanExecuteAdd(Object obj)
         {
-            bool isValid = Validation.HasCurrencyFormat(UserInput);
+            bool isValid = Validation.CanAdd(UserInput);
             if (isValid) 
             {
                 var comissionPercentage = ((iBank)CurrentATM.Engine.BankAcquire).GetComission();
