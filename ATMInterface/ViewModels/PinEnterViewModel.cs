@@ -2,12 +2,8 @@
 using ATMInterface.Tools;
 using ATMInterface.Tools.Utilities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ATMInterface.ViewModels
@@ -15,6 +11,7 @@ namespace ATMInterface.ViewModels
     class PinEnterViewModel : INotifyPropertyChanged
     {
         private string _userInput;
+        private int _inputAttempts;
 
         private Action _goToMain;
         private Action _goToAuth;
@@ -32,16 +29,22 @@ namespace ATMInterface.ViewModels
         private void ExecuteAcceptPin()
         {
             int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.PASSWORD_ENTERED, UserInput);
+            UserInput = "";
             if (actionSuccess == 1) GoToMain();
             else if (actionSuccess == 0)
             {
-                string msg = "Incorrect Pin Entered!";
+                InputAttempts--;
+                string msg = $"Incorrect Pin Entered! {InputAttempts} password input attempts left!";
                 MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else if(actionSuccess == -1)
             {
-                string msg = "Error Occured!";
+                InputAttempts--;
+                string msg = "0 password input attempts left!";
                 MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                CurrentATM.Engine.SessionIsOver();
+                GoToAuth();
             }
         }
 
@@ -55,11 +58,23 @@ namespace ATMInterface.ViewModels
             }
         }
 
+        public int InputAttempts
+        {
+            get { return _inputAttempts; }
+            set
+            {
+                _inputAttempts = value;
+                OnPropertyChanged();
+            }
+        }
+
         public PinEnterViewModel(Action goToMain, Action goToAuth, eATM atm)
         {
             _goToMain = goToMain;
             _goToAuth = goToAuth;
             CurrentATM = atm;
+            UserInput = "";
+            InputAttempts = 3;
         }
 
         public void GoToMain()

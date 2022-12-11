@@ -28,14 +28,19 @@ namespace ATMInterface
 		private eATM currentATM;
 		private ePaymentSystem ps;
 		private eMonobank mb;
+        private ePrivatBank pb;
 
-        private void Killing_App(object sender, CancelEventArgs e)
+        private void KillingApp(object sender, CancelEventArgs e)
         {
             string msg = "Are you sure you want to exit???";
             MessageBoxResult result = MessageBox.Show(msg,"ATM", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.No)
             {
                 e.Cancel = true;
+            }
+            else
+            {
+                currentATM.Engine.SessionIsOver();
             }
             
         }
@@ -84,6 +89,7 @@ namespace ATMInterface
         {
 			commutator = new eCommutator();
 			mb = new eMonobank(commutator);
+            pb = new ePrivatBank(commutator);
 			currentATM = new eATM(commutator, mb);
 			ps = new ePaymentSystem(commutator);
 		}

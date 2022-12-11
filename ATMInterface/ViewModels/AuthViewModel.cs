@@ -2,12 +2,8 @@
 using ATMInterface.Tools;
 using ATMInterface.Tools.Utilities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ATMInterface.ViewModels
@@ -31,6 +27,7 @@ namespace ATMInterface.ViewModels
         {
             CurrentATM.Engine.OnNewSession();
             int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.CREDIT_CARD_INSERTED, UserInput);
+            UserInput = "";
             if (actionSuccess == 1)
             {
                 GoToPinEnter();
@@ -71,6 +68,7 @@ namespace ATMInterface.ViewModels
         {
             _goToPinEnter = goToPinEnter;
             CurrentATM = currentATM;
+            UserInput = "";
         }
 
         public void GoToPinEnter()

@@ -1,46 +1,103 @@
 ﻿using ATMInterface.AccesDataSQL;
 using ATMInterface.DBClassess;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ATM
 {
-    public abstract class eBank : Node
-    {
-        public List<eATMEngine> ATMNetwork { get; set; }
-        public eBank(string name, eCommutator _commutator)
-            : base(name, _commutator)
-        {}
 
+    public interface iBank
+    {
         public abstract bool ATMregister(eATMEngine newATM);
-        protected abstract Result ProcessQuery(eLog payload, out int answer);
+        public abstract int GetComission();
+        public abstract bool SessionOff(eLog payload);
+        public abstract void ProcessAction(eLog payload);
+        public abstract void CreditCardInserted(eLog payload);
+        public abstract void NewDataEntered(eLog payload);
+        public abstract void CheckPrintBalance(eLog payload);
     }
-
-    public class eMonobank : eBank 
+    public class eBank : Node, iBank
     {
+        protected static int PASSWORD_ATTEMPTS = 3;
+        protected static int COMISSION_PERCENTAGE;
+        protected static string BANK_CODE;
         private eBankUser CurrentUser { get; set; }
-        int queryAnswer;//shit code might delete later
-        public eMonobank(eCommutator _commutator)
-            : base("monobank", _commutator)
+        private int queryAnswer;
+        private int passwordInputAttempts;
+        public List<eATMEngine> ATMNetwork { get; set; }
+        public eBank(string bankCode, eCommutator _commutator)
+            : base(SqlDataAccess.LoadBankName(bankCode), _commutator)
         {
             ATMNetwork = new List<eATMEngine>();
-            init();
+            BANK_CODE = bankCode;
+
+            COMISSION_PERCENTAGE = (int)SqlDataAccess.LoadBankComission(BANK_CODE); //TO DO
+            Init();
         }
-        public override bool ATMregister(eATMEngine newATM)
+        bool iBank.ATMregister(eATMEngine newATM)
         {
             ATMNetwork.Add(newATM);
             return true;
         }
-
-        public override void receive(eLog payload)
+        
+        int iBank.GetComission()
         {
-            Process(payload);
+            return COMISSION_PERCENTAGE;
         }
 
-        private bool Process(eLog payload)
+        bool iBank.SessionOff(eLog payload)
+        {
+            if (payload.Header.action == eUserAction.SESSION_OFF)
+            {
+                CurrentUser = null;
+                return true;
+            }
+            return false;
+        }
+
+        void iBank.ProcessAction(eLog payload)
+        {
+            switch (payload.Header.action)
+            {
+                case eUserAction.CREDIT_CARD_INSERTED:
+                    ((iBank)this).CreditCardInserted(payload);
+                    break;
+                case eUserAction.PUT_CASH:
+                case eUserAction.GET_CASH:
+                case eUserAction.PASSWORD_ENTERED:
+                    ((iBank)this).NewDataEntered(payload);
+                    break;
+
+            }
+        }
+
+        void iBank.CreditCardInserted(eLog payload)
+        {
+            CurrentUser = new eBankUser();
+            passwordInputAttempts = PASSWORD_ATTEMPTS;
+            ((iBank)this).NewDataEntered(payload);
+        }
+
+        void iBank.NewDataEntered(eLog payload)
+        {
+            var data = CurrentUser.UserData;
+            data.MoneyAmount = payload.UserData.MoneyAmount == 0 ? data.MoneyAmount : payload.UserData.MoneyAmount;
+            data.СardNumber = payload.UserData.СardNumber == null ? data.СardNumber : payload.UserData.СardNumber;
+            data.Password = payload.UserData.Password == null ? data.Password : payload.UserData.Password;
+            CurrentUser.UserData = data;
+        }
+
+        void iBank.CheckPrintBalance(eLog payload)
+        {
+            if (payload.Header.action == eUserAction.CHECK_BALANCE || payload.Header.action == eUserAction.PRINT_BALANCE)
+            {
+                Data balanceData = CurrentUser.UserData;
+                balanceData.MoneyAmount = queryAnswer;
+                payload.ApplyData(balanceData);
+            }
+            else return;
+        }
+
+        protected override void Process(eLog payload)
         {
             if (payload.Header.dst == Name)
             {
@@ -49,42 +106,33 @@ namespace ATM
                     ReqSenders.Push(payload.Header.src);
                     if (ReqSenders.Peek() == "PAYMENT_SYSTEM")
                     {
-                        if (payload.Header.action == eUserAction.CREDIT_CARD_INSERTED) 
-                        { 
-                            CurrentUser = new eBankUser(); 
-                            var data = CurrentUser.UserData; 
-                            data.СardNumber = payload.UserData.СardNumber; 
-                            CurrentUser.UserData = data; 
-                        }
-                        else if (payload.Header.action == eUserAction.SESSION_OFF) { CurrentUser = null; return true; }
-                        else if (payload.Header.action == eUserAction.PASSWORD_ENTERED) { var data = CurrentUser.UserData; data.Password = payload.UserData.Password; CurrentUser.UserData = data; }
-                        else if (payload.Header.action == eUserAction.GET_CASH || payload.Header.action == eUserAction.PUT_CASH) 
-                        { var data = CurrentUser.UserData; data.MoneyAmount = payload.UserData.MoneyAmount; CurrentUser.UserData = data; }
+                        if (((iBank)this).SessionOff(payload)) return;
+
+                        ((iBank)this).ProcessAction(payload);
 
                         Result res = ProcessQuery(payload, out queryAnswer);
-                        if (payload.Header.action == eUserAction.CHECK_BALANCE)
-                        {
-                            Data balanceData = new Data();
-                            balanceData.MoneyAmount = queryAnswer;
-                            payload.ApplyData(balanceData);
-                        }
-                        send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, LogType.Ack, res));
 
+                        if (res == Result.FAIL && payload.Header.action == eUserAction.PASSWORD_ENTERED) passwordInputAttempts--;
+                        if (queryAnswer != -1) ((iBank)this).CheckPrintBalance(payload);
+
+                        if (payload.Header.action == eUserAction.PASSWORD_ENTERED && passwordInputAttempts == 0)
+                            Send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, LogType.Ack, Result.ERROR));
+                        else Send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, LogType.Ack, res));
                     }
                     else
                     {
-                        send(eLogger.GenerateLog(payload.Header.action, payload.UserData, "PAYMENT_SYSTEM", Name, payload.Header.type));
+                        Send(eLogger.GenerateLog(payload.Header.action, payload.UserData, "PAYMENT_SYSTEM", Name, payload.Header.type, payload.Header.result));
                     }
                 }
                 else//answer
                 {
-                    send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, payload.Header.type));
+                    Send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, payload.Header.type, payload.Header.result));
                 }
-                return true;
             }
-            return false;
         }
-        protected override Result ProcessQuery(eLog payload, out int answer)
+
+    
+        protected Result ProcessQuery(eLog payload, out int answer)
         {
             string id = CurrentUser.UserData.СardNumber;
             string pass = CurrentUser.UserData.Password;
@@ -104,17 +152,15 @@ namespace ATM
             switch (payload.Header.action)
             {
                 case eUserAction.CREDIT_CARD_INSERTED:
-                    answer = cardIsValid ? 1 : 0;
-                    break;
+                    return cardIsValid ? Result.SUCCESS : Result.FAIL;
                 case eUserAction.PASSWORD_ENTERED:
-                    answer = SqlDataAccess.CorrectPassword(id, pass) ? 1 : 0;
-                    break;
+                    return SqlDataAccess.CorrectPassword(id, pass) ? Result.SUCCESS : Result.FAIL;
                 case eUserAction.CHECK_BALANCE:
                     answer = card.Balance;
-                    break;
+                    return Result.SUCCESS;
                 case eUserAction.PRINT_BALANCE:
                     answer = card.Balance;
-                    break;
+                    return Result.SUCCESS;
                 case eUserAction.GET_CASH:
                     answer = (card.Balance > 0 && (card.Balance - money) > 0) ? 1 : 0;
                     if(answer == 1) { SqlDataAccess.UpdateBalance(id, (card.Balance - money)); }
@@ -136,8 +182,6 @@ namespace ATM
                 default:
                     return Result.ERROR;
             }
-
-            return answer == -1 ? Result.ERROR : answer == 0 ? Result.FAIL : Result.SUCCESS;
         }
     }
 }

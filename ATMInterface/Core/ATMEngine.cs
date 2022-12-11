@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ATM
 {
     public class eATMEngine : Node
     {
         private eBank bankAcquire;
+        public eBank BankAcquire => bankAcquire;
         private eATM ATMowner;
-        bool sessionIsOn = false;
+        private bool sessionIsOn = false;
         private int result = 0;
         private Tuple<string, string> printInfo;
         public eATMEngine(eATM _owner, eCommutator _commutator, eBank _bankAcquire)
@@ -16,8 +15,8 @@ namespace ATM
         {
             this.ATMowner = _owner;
             bankAcquire = _bankAcquire;
-            bankAcquire.ATMregister(this);
-            init();
+            ((iBank)bankAcquire).ATMregister(this);
+            Init();
         }
         public void OnNewSession()//to use by interface
         {
@@ -26,7 +25,7 @@ namespace ATM
         public void SessionIsOver()//to use by interface
         {
             sessionIsOn = false;
-            send(eLogger.GenerateLog(eUserAction.SESSION_OFF, "", bankAcquire.Name, Name, LogType.Req));
+            Send(eLogger.GenerateLog(eUserAction.SESSION_OFF, "", bankAcquire.Name, Name, LogType.Req));
         }
         public int OnUserInput(eUserAction _action, string _userInput)//to use by interface
         {
@@ -41,11 +40,11 @@ namespace ATM
         }
         private bool ProcessAction(eUserAction _action, string _userInput)
         {
-            send(eLogger.GenerateLog(_action, _userInput, bankAcquire.Name, Name, LogType.Req));
+            Send(eLogger.GenerateLog(_action, _userInput, bankAcquire.Name, Name, LogType.Req));
             return true;
         }
 
-        public override void receive(eLog _payload)
+        protected override void Process(eLog _payload)
         {
             if (_payload.Header.dst == Name)
             {
@@ -60,7 +59,7 @@ namespace ATM
                     }
                     else
                     {
-                        result = _payload.Header.result.Equals("FAIL") ? -1 : _payload.Header.result.Equals("ERROR") ? 0 : 1;
+                        result = _payload.Header.result.Equals(Result.ERROR) ? -1 : _payload.Header.result.Equals(Result.FAIL) ? 0 : 1;
                     }
                 }
             }

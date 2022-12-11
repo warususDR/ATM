@@ -1,47 +1,43 @@
 ﻿using ATMInterface.AccesDataSQL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ATM
 {
     class ePaymentSystem : Node
     {
         public string BankEmitent;
+        internal class Router
+        {
+            public static string? DetermineBank(string bankCode)
+            {
+                return SqlDataAccess.LoadBankName(bankCode);
+            }
+        }
         public ePaymentSystem(eCommutator _commutator)
             : base("PAYMENT_SYSTEM", _commutator)
         {
-            init();
+            Init();
         }
 
-        public override void receive(eLog payload)
+        protected override void Process(eLog payload)
         {
-            Process(payload);
-        }
-
-        private bool Process(eLog payload)
-        {
-            string id = payload.UserData.СardNumber.Substring(0,2);
             if (payload.Header.dst == Name)
             {
-
                 if (payload.Header.type == LogType.Req)
                 {
                     ReqSenders.Push(payload.Header.src);
-                    
-                    if (BankEmitent == null) BankEmitent = SqlDataAccess.LoadBankName(id);//here should be method to get name from db
+                    if (payload.Header.action == eUserAction.CREDIT_CARD_INSERTED)
+                        BankEmitent = Router.DetermineBank(payload.UserData.СardNumber.Substring(0, 2));
 
-                    send(eLogger.GenerateLog(payload.Header.action, payload.UserData, BankEmitent, Name, payload.Header.type));
+                    if(BankEmitent == null) 
+                        Send(eLogger.GenerateLog(payload.Header.action, payload.UserData, payload.Header.dst, Name, LogType.Ack, payload.Header.result));
+                    else
+                        Send(eLogger.GenerateLog(payload.Header.action, payload.UserData, BankEmitent, Name, payload.Header.type, payload.Header.result));
                 }
                 else
                 {
-                    send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, payload.Header.type));
+                    Send(eLogger.GenerateLog(payload.Header.action, payload.UserData, ReqSenders.Pop(), Name, payload.Header.type, payload.Header.result));
                 }
-                return true;
             }
-            return false;
         }
     }
 }

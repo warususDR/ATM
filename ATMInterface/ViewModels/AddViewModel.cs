@@ -2,12 +2,8 @@
 using ATMInterface.Tools;
 using ATMInterface.Tools.Utilities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ATMInterface.ViewModels
@@ -15,6 +11,8 @@ namespace ATMInterface.ViewModels
     class AddViewModel : INotifyPropertyChanged
     {
         private string _userInput;
+        private string _comission;
+        private Visibility _comissionVisibility;
 
         private Action _goToMain;
 
@@ -24,16 +22,28 @@ namespace ATMInterface.ViewModels
 
         private bool CanExecuteAdd(Object obj)
         {
-            return Validation.HasCurrencyFormat(UserInput);
+            bool isValid = Validation.HasCurrencyFormat(UserInput);
+            if (isValid) 
+            {
+                var comissionPercentage = ((iBank)CurrentATM.Engine.BankAcquire).GetComission();
+                Comission = Utils.CalculateComission(comissionPercentage, UserInput);
+                ComissionVisibility = Visibility.Visible;
+            }
+            else
+            {
+                ComissionVisibility = Visibility.Hidden;
+            }
+            return isValid;
         }
 
         private void ExecuteAdd()
         {
             int actionSuccess = CurrentATM.Engine.OnUserInput(eUserAction.PUT_CASH, UserInput);
+            UserInput = "";
             if (actionSuccess == 1)
             {
-                MessageBox.Show("Successfully added cash!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 GoToMain();
+                MessageBox.Show("Successfully added cash!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else if (actionSuccess == 0)
             {
@@ -57,10 +67,33 @@ namespace ATMInterface.ViewModels
             }
         }
 
+        public string Comission
+        {
+            get { return _comission; }
+            set
+            {
+                _comission = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Visibility ComissionVisibility
+        {
+            get { return _comissionVisibility; }
+            set
+            {
+                _comissionVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
         public AddViewModel(Action goToMain, eATM atm)
         {
             _goToMain = goToMain;
             CurrentATM = atm;
+            UserInput = "";
+            Comission = "";
+            ComissionVisibility = Visibility.Hidden;
         }
 
         public void GoToMain()
