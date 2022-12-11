@@ -16,7 +16,7 @@ namespace ATM
         public abstract void CountComission();
         public abstract void CheckPrintBalance(eLog payload);
     }
-    public class eBank : Node, iBank
+    public abstract class eBank : Node, iBank
     {
         protected static int PASSWORD_ATTEMPTS = 3;
         protected static int COMISSION_PERCENTAGE;
@@ -31,7 +31,7 @@ namespace ATM
             ATMNetwork = new List<eATMEngine>();
             BANK_CODE = bankCode;
 
-            COMISSION_PERCENTAGE = (int)SqlDataAccess.LoadBankComission(BANK_CODE); //TO DO
+            COMISSION_PERCENTAGE = (int)SqlDataAccess.LoadBankComission(BANK_CODE);
             Init();
         }
         bool iBank.ATMregister(eATMEngine newATM)
