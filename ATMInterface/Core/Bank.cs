@@ -1,6 +1,7 @@
 ﻿using ATMInterface.AccesDataSQL;
 using ATMInterface.DBClassess;
 using System.Collections.Generic;
+using System.Security.Policy;
 
 namespace ATM
 {
@@ -95,7 +96,7 @@ namespace ATM
         void iBank.CountComission()
         {
             var data = CurrentUser.UserData;
-            data.MoneyAmount = (100 - COMISSION_PERCENTAGE) * data.MoneyAmount / 100;
+            data.MoneyAmount = data.MoneyAmount - (COMISSION_PERCENTAGE * data.MoneyAmount) / 100;
             CurrentUser.UserData = data;
         }
 
@@ -126,6 +127,7 @@ namespace ATM
                         Result res = ProcessQuery(payload, out queryAnswer);
 
                         if (res == Result.FAIL && payload.Header.action == eUserAction.PASSWORD_ENTERED) passwordInputAttempts--;
+                        
                         if (queryAnswer != -1) ((iBank)this).CheckPrintBalance(payload);
 
                         if (payload.Header.action == eUserAction.PASSWORD_ENTERED && passwordInputAttempts == 0)
@@ -156,9 +158,8 @@ namespace ATM
             {
                 card = SqlDataAccess.LoadInfo(id);
             }
-            int com;
-            
-            double comis = (double)(COMISSION_PERCENTAGE)/100;
+
+            int atmCom = payload.UserData.MoneyAmount - money;
             int put_limit = 1000;
             answer = -1;
 
@@ -175,19 +176,15 @@ namespace ATM
                     answer = card.Balance;
                     return Result.SUCCESS;
                 case eUserAction.GET_CASH:
-                    if (card.Balance > 0 && (card.Balance - money) >= 0) {
-                        com =(int) (money * comis);
-                        SqlDataAccess.UpdateBalance(id, (card.Balance - (money + com))); 
+                    if (card.Balance > 0 && (card.Balance - payload.UserData.MoneyAmount - atmCom) >= 0) {
+                        SqlDataAccess.UpdateBalance(id, (card.Balance - (payload.UserData.MoneyAmount + atmCom))); 
                         return Result.SUCCESS; }
                     else return Result.FAIL;
-                    break;
                 case eUserAction.PUT_CASH:
                     if (money <= put_limit) {
-                        com = (int) (money * comis);
-                        SqlDataAccess.UpdateBalance(id, ((money + card.Balance) - com));
+                        SqlDataAccess.UpdateBalance(id, ((payload.UserData.MoneyAmount + card.Balance) - atmCom));
                         return Result.SUCCESS; }
                     else return Result.FAIL;
-                    break;
                 default:
                     return Result.ERROR;
             }
